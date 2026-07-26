@@ -55,9 +55,9 @@ export async function updateSession(request: NextRequest) {
   });
 
   //if (isAdminRoute && !isAuthorized) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+  //  const url = request.nextUrl.clone();
+  //  url.pathname = "/login";
+ //   return NextResponse.redirect(url);
  // }
 
   return supabaseResponse;
