@@ -1,17 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-function getAdminEmails(): string[] {
-  return (process.env.ADMIN_EMAILS ?? "")
-    .split(",")
-    .map((email) => email.trim().toLowerCase())
-    .filter(Boolean);
-}
-
 export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
-    request,
-  });
+  let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -25,40 +16,36 @@ export async function updateSession(request: NextRequest) {
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           );
-          supabaseResponse = NextResponse.next({
-            request,
-          });
+          response = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            response.cookies.set(name, value, options)
           );
         },
       },
     }
   );
 
-  // Importante: no uses getSession(), usa getUser()
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
-  const adminEmails = getAdminEmails();
-  const isAuthorized =
-    !!user?.email && adminEmails.includes(user.email.toLowerCase());
 
-  // Debug temporal (quítalo después)
-  console.log({
-    path: request.nextUrl.pathname,
-    userEmail: user?.email,
-    adminEmails,
-    isAuthorized,
-  });
+  let isAuthorized = false;
+  if (user?.email) {
+    const { data: admin } = await supabase
+      .from("admins")
+      .select("email")
+      .eq("email", user.email)
+      .maybeSingle();
+    isAuthorized = !!admin;
+  }
 
-  //if (isAdminRoute && !isAuthorized) {
-  //  const url = request.nextUrl.clone();
-  //  url.pathname = "/login";
- //   return NextResponse.redirect(url);
- // }
+  if (isAdminRoute && !isAuthorized) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
 
-  return supabaseResponse;
+  return response;
 }
