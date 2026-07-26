@@ -1,26 +1,47 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@variant dark (&:where(.dark, .dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-ring: var(--primary);
+
+  --font-display: var(--font-sora);
+  --font-body: var(--font-inter);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #ffffff;
+  --foreground: #101010;
+  --card: #ffffff;
+  --muted: #f2f3f5;
+  --muted-foreground: #5b6472;
+  --border: #e5e7eb;
+
+  --primary: #112140;
+  --primary-foreground: #ffffff;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.dark {
+  --background: #101010;
+  --foreground: #f5f6f7;
+  --card: #16171b;
+  --muted: #1b1d22;
+  --muted-foreground: #9aa0ac;
+  --border: #26282e;
 }
+
+/* Temas de marca — se elige uno solo al final (con su oscuro) */
+[data-theme="navy"]    { --primary: #112140; --primary-foreground: #ffffff; }
+[data-theme="cyan"]    { --primary: #00aeef; --primary-foreground: #ffffff; }
+[data-theme="magenta"] { --primary: #e81e83; --primary-foreground: #ffffff; }
+[data-theme="amber"]   { --primary: #ffc107; --primary-foreground: #101010; }
+[data-theme="orange"]  { --primary: #eb6100; --primary-foreground: #ffffff; }
+[data-theme="carbon"]  { --primary: #101010; --primary-foreground: #ffffff; }
