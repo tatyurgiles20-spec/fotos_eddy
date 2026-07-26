@@ -4526,7 +4526,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/.next/server/chunks/node_modules_1wxjocz._.js": {
-      "bytes": 242589,
+      "bytes": 242604,
       "imports": [
         {
           "path": "@opentelemetry/api",
@@ -7894,7 +7894,7 @@
           "bytesInOutput": 275
         },
         ".open-next/server-functions/default/.next/server/chunks/node_modules_1wxjocz._.js": {
-          "bytesInOutput": 256772
+          "bytesInOutput": 256787
         },
         ".open-next/server-functions/default/.next/server/chunks/_next-internal_server_app_favicon_ico_route_actions_0g2jjls.js": {
           "bytesInOutput": 271
@@ -8116,7 +8116,7 @@
           "bytesInOutput": 59814
         }
       },
-      "bytes": 3625579
+      "bytes": 3625594
     }
   }
 }

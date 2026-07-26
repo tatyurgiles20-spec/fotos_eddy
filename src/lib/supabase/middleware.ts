@@ -54,11 +54,11 @@ export async function updateSession(request: NextRequest) {
     isAuthorized,
   });
 
-  if (isAdminRoute && !isAuthorized) {
+  //if (isAdminRoute && !isAuthorized) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
-  }
+ // }
 
   return supabaseResponse;
 }
