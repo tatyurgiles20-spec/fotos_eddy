@@ -1,6 +1,14 @@
 import { GoogleSignInButton } from "@/features/auth/components/GoogleSignInButton";
 
-export function LoginView() {
+type LoginViewProps = {
+  debugParams?: { [key: string]: string | string[] | undefined };
+};
+
+export function LoginView({ debugParams }: LoginViewProps) {
+  const debugEntries = Object.entries(debugParams ?? {}).filter(([key]) =>
+    key.startsWith("debug_")
+  );
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-6">
       <div className="w-full max-w-sm">
@@ -15,6 +23,18 @@ export function LoginView() {
         </div>
 
         <GoogleSignInButton />
+
+        {/* TEMPORAL — solo para depurar, quitar después */}
+        {debugEntries.length > 0 && (
+          <div className="mt-6 rounded-lg border border-border bg-card p-4 text-left text-xs">
+            <p className="mb-2 font-semibold text-foreground">Debug:</p>
+            {debugEntries.map(([key, value]) => (
+              <p key={key} className="break-all text-muted-foreground">
+                <span className="text-foreground">{key}:</span> {value}
+              </p>
+            ))}
+          </div>
+        )}
       </div>
     </main>
   );

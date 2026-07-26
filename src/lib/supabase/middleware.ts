@@ -38,8 +38,6 @@ export async function updateSession(request: NextRequest) {
 
   const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
   const adminEmails = getAdminEmails();
-  console.log("Admin emails configurados:", getAdminEmails());
-console.log("Email del usuario:", user?.email);
   const isAuthorized =
     !!user && !!user.email && adminEmails.includes(user.email.toLowerCase());
 
