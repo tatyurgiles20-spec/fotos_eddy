@@ -10,6 +10,9 @@ export function GoogleSignInButton() {
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback?next=/admin`,
+        queryParams: {
+        prompt: 'select_account', // <-- Esto obliga a Google a mostrar el selector de cuentas siempre
+      },
       },
     });
   };
