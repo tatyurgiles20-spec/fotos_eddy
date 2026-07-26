@@ -9,7 +9,9 @@ function getAdminEmails(): string[] {
 }
 
 export async function updateSession(request: NextRequest) {
-  let response = NextResponse.next({ request });
+  let supabaseResponse = NextResponse.next({
+    request,
+  });
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -23,15 +25,18 @@ export async function updateSession(request: NextRequest) {
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           );
-          response = NextResponse.next({ request });
+          supabaseResponse = NextResponse.next({
+            request,
+          });
           cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, options)
           );
         },
       },
     }
   );
 
+  // Importante: no uses getSession(), usa getUser()
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -39,7 +44,15 @@ export async function updateSession(request: NextRequest) {
   const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
   const adminEmails = getAdminEmails();
   const isAuthorized =
-    !!user && !!user.email && adminEmails.includes(user.email.toLowerCase());
+    !!user?.email && adminEmails.includes(user.email.toLowerCase());
+
+  // Debug temporal (quítalo después)
+  console.log({
+    path: request.nextUrl.pathname,
+    userEmail: user?.email,
+    adminEmails,
+    isAuthorized,
+  });
 
   if (isAdminRoute && !isAuthorized) {
     const url = request.nextUrl.clone();
@@ -47,5 +60,5 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  return response;
+  return supabaseResponse;
 }

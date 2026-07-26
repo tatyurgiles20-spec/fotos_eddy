@@ -4547,7 +4547,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__17ay5_5._.js": {
-      "bytes": 2769,
+      "bytes": 2770,
       "imports": [
         {
           "path": ".open-next/server-functions/default/node_modules/next/dist/shared/lib/no-fallback-error.external.js",
@@ -4574,7 +4574,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/.next/server/chunks/ssr/src_features_auth_components_GoogleSignInButton_tsx_13l1gad._.js": {
-      "bytes": 1273,
+      "bytes": 1311,
       "imports": [],
       "format": "cjs"
     },
@@ -7903,7 +7903,7 @@
           "bytesInOutput": 41481
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__17ay5_5._.js": {
-          "bytesInOutput": 2892
+          "bytesInOutput": 2893
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/_next-internal_server_app_login_page_actions_04fnjo0.js": {
           "bytesInOutput": 261
@@ -7912,7 +7912,7 @@
           "bytesInOutput": 23514
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/src_features_auth_components_GoogleSignInButton_tsx_13l1gad._.js": {
-          "bytesInOutput": 1427
+          "bytesInOutput": 1465
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__1g68k8q._.js": {
           "bytesInOutput": 8367
@@ -8116,7 +8116,7 @@
           "bytesInOutput": 59814
         }
       },
-      "bytes": 3625540
+      "bytes": 3625579
     }
   }
 }
