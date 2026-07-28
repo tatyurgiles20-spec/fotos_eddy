@@ -5,43 +5,177 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
   --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
   --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-light: var(--primary-light);
   --color-primary-foreground: var(--primary-foreground);
   --color-ring: var(--primary);
 
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+
   --font-display: var(--font-sora);
   --font-body: var(--font-inter);
+  --font-accent: var(--font-caveat);
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+
+  --shadow-soft: 0 2px 10px -2px rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+  --shadow-elevated: 0 12px 32px -8px rgb(0 0 0 / 0.12), 0 4px 12px -4px rgb(0 0 0 / 0.08);
+  --shadow-colored: 0 10px 28px -6px var(--primary-shadow);
 }
+
+/* src/app/globals.css */
 
 :root {
-  --background: #ffffff;
-  --foreground: #101010;
+  /* Usamos primary-light con baja opacidad o el tono pastel como fondo base */
+  --background: var(--primary-light);
+  --surface: #ffffff;
+  --foreground: #17140f;
+
   --card: #ffffff;
-  --muted: #f2f3f5;
-  --muted-foreground: #5b6472;
-  --border: #e5e7eb;
+  --card-foreground: #17140f;
+
+  --muted: #f0ece4;
+  --muted-foreground: #6b6459;
+
+  --border: #e7e0d5;
+  --border-strong: #d8cfc0;
+
+  --secondary: #f0ece4;
+  --secondary-foreground: #17140f;
+
+  --success: #1a9d5c;
+  --warning: #b7791f;
+  --danger: #d1453d;
 
   --primary: #112140;
+  --primary-hover: #0a1730;
+  --primary-light: #f0f3f9;
   --primary-foreground: #ffffff;
+  --primary-shadow: rgb(17 33 64 / 0.25);
 }
-
 .dark {
   --background: #101010;
-  --foreground: #f5f6f7;
-  --card: #16171b;
-  --muted: #1b1d22;
-  --muted-foreground: #9aa0ac;
-  --border: #26282e;
+  --surface: #161513;
+  --foreground: #f3f1ec;
+
+  --card: #1a1917;
+  --card-foreground: #f3f1ec;
+
+  --muted: #211f1c;
+  --muted-foreground: #a39c8e;
+
+  --border: #2b2925;
+  --border-strong: #38352f;
+
+  --secondary: #211f1c;
+  --secondary-foreground: #f3f1ec;
+
+  --success: #34c27f;
+  --warning: #d9a441;
+  --danger: #e5726b;
 }
 
-/* Temas de marca — se elige uno solo al final (con su oscuro) */
-[data-theme="navy"]    { --primary: #112140; --primary-foreground: #ffffff; }
-[data-theme="cyan"]    { --primary: #00aeef; --primary-foreground: #ffffff; }
-[data-theme="magenta"] { --primary: #e81e83; --primary-foreground: #ffffff; }
-[data-theme="amber"]   { --primary: #ffc107; --primary-foreground: #101010; }
-[data-theme="orange"]  { --primary: #eb6100; --primary-foreground: #ffffff; }
-[data-theme="carbon"]  { --primary: #101010; --primary-foreground: #ffffff; }
+/* ── Temas de marca — se elige uno solo al final (con su oscuro) ── */
+/* ── Temas de marca — se elige uno solo al final (con su oscuro) ── */
+
+/* ── Temas de marca ── */
+
+[data-theme="navy"] {
+  --primary: #112140;
+  --primary-hover: #0a1730;
+  --primary-light: #e8eaf0;
+  --primary-foreground: #ffffff;
+  --primary-shadow: rgb(17 33 64 / 0.25);
+}
+
+[data-theme="cyan"] {
+  --primary: #00aeef;
+  --primary-hover: #0090c7;
+  --primary-light: #dff4fc;
+  --primary-foreground: #ffffff;
+  --primary-shadow: rgb(0 174 239 / 0.3);
+}
+
+[data-theme="magenta"] {
+  --primary: #e81e83;
+  --primary-hover: #c4176e;
+  --primary-light: #fbe0ee;
+  --primary-foreground: #ffffff;
+  --primary-shadow: rgb(232 30 131 / 0.28);
+}
+
+[data-theme="amber"] {
+  --primary: #ffc107;
+  --primary-hover: #e0a800;
+  --primary-light: #fff3d0;
+  --primary-foreground: #17140f;
+  --primary-shadow: rgb(255 193 7 / 0.32);
+}
+
+[data-theme="orange"] {
+  --primary: #eb6100;
+  --primary-hover: #c75200;
+  --primary-light: #fde6d6;
+  --primary-foreground: #ffffff;
+  --primary-shadow: rgb(235 97 0 / 0.3);
+}
+
+[data-theme="carbon"] {
+  --primary: #101010;
+  --primary-hover: #000000;
+  --primary-light: #f3f3f3;
+  --primary-foreground: #ffffff;
+  --primary-shadow: rgb(16 16 16 / 0.3);
+}
+ 
+.dark[data-theme="carbon"] { --primary-light: #232323; }
+
+/* ── Detalles de marca ── */
+
+::selection {
+  background-color: var(--primary-light);
+  color: var(--primary);
+}
+
+* {
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+a {
+  color: var(--primary);
+}
+
+/* Etiqueta manuscrita — para precios, "hecho a mano", firmas */
+.tag-handwritten {
+  font-family: var(--font-accent), cursive;
+  font-size: 1.35rem;
+  color: var(--primary);
+  transform: rotate(-2deg);
+  display: inline-block;
+}
+
+/* Tarjeta con levantamiento suave al hover — para productos/álbumes */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-elevated);
+}

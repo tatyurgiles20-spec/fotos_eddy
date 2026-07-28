@@ -1,12 +1,10 @@
+// src/app/providers.tsx
 "use client";
 
 import { ThemeProvider } from "next-themes";
 import { ColorThemeProvider } from "@/features/theme/hooks/useColorTheme";
 import { ColorThemeSwitcher } from "@/features/theme/components/ColorThemeSwitcher";
 
-// Next.js 16.2+ / React 19 advierten sobre el <script> que next-themes
-// inyecta para evitar parpadeo de tema. Es un falso positivo conocido
-// (el script sí corre correctamente en SSR). Se filtra solo ese mensaje.
 if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
   const originalError = console.error;
   console.error = (...args: unknown[]) => {
@@ -22,10 +20,11 @@ if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    // forcedTheme="light" bloquea la inyección de la clase .dark de next-themes
+    <ThemeProvider attribute="class" defaultTheme="light" forcedTheme="light">
       <ColorThemeProvider>
         {children}
-        {/* TEMPORAL: quitar cuando el cliente elija el tema final */}
+        {/* TEMPORAL: selector de color de marca */}
         <ColorThemeSwitcher />
       </ColorThemeProvider>
     </ThemeProvider>

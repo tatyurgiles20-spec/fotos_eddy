@@ -27,11 +27,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                  active
+                className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${active
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
+                  }`}
               >
                 {item.label}
               </Link>
@@ -42,7 +41,17 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex-1">
         <header className="flex h-16 items-center justify-between border-b border-border px-6">
-          <span className="text-sm text-muted-foreground">{user?.email}</span>
+          <div className="flex items-center gap-3">
+            {user?.user_metadata?.avatar_url && (
+              <img
+                src={user.user_metadata.avatar_url}
+                alt={user.user_metadata?.full_name ?? "Foto de perfil"}
+                referrerPolicy="no-referrer"
+                className="h-8 w-8 rounded-full border border-border object-cover"
+              />
+            )}
+            <span className="text-sm text-muted-foreground">{user?.email}</span>
+          </div>
           <div className="flex items-center gap-3">
             <ThemeToggle />
             <button

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -11,8 +12,25 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-        <Link href="/" className="font-display text-xl font-bold tracking-tight">
-          Eddy
+        <Link href="/" className="flex items-center">
+          {/* Logo full color — modo claro */}
+          <Image
+            src="/logo-nova-print.png"
+            alt="Nova Print"
+            width={140}
+            height={40}
+            priority
+            className="h-9 w-auto dark:hidden"
+          />
+          {/* Logo blanco/contorno — modo oscuro */}
+          <Image
+            src="/logo-nova-print-white.png"
+            alt="Nova Print"
+            width={140}
+            height={40}
+            priority
+            className="hidden h-9 w-auto dark:block"
+          />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
@@ -27,7 +45,7 @@ export function Header() {
           ))}
         </nav>
 
-        <ThemeToggle />
+        
       </div>
     </header>
   );

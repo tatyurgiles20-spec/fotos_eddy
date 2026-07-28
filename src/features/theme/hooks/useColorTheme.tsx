@@ -1,3 +1,4 @@
+// src/features/theme/hooks/useColorTheme.tsx
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
@@ -25,19 +26,22 @@ const DEFAULT_THEME: ColorThemeId = "navy";
 export function ColorThemeProvider({ children }: { children: React.ReactNode }) {
   const [colorTheme, setColorThemeState] = useState<ColorThemeId>(DEFAULT_THEME);
 
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY) as ColorThemeId | null;
-    if (stored) setColorThemeState(stored);
-  }, []);
+  // Leer localStorage en la carga inicial e inyectar data-theme de inmediato
+useEffect(() => {
+  const stored = localStorage.getItem(STORAGE_KEY) as ColorThemeId | null;
+  const theme = stored || DEFAULT_THEME;
+  setColorThemeState(theme);
+  document.documentElement.setAttribute("data-theme", theme);
+  document.documentElement.classList.remove("dark");
+}, []);
 
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", colorTheme);
-  }, [colorTheme]);
-
-  const setColorTheme = (id: ColorThemeId) => {
-    setColorThemeState(id);
-    localStorage.setItem(STORAGE_KEY, id);
-  };
+const setColorTheme = (id: ColorThemeId) => {
+  setColorThemeState(id);
+  localStorage.setItem(STORAGE_KEY, id);
+  document.documentElement.setAttribute("data-theme", id);
+  // Seguridad: mientras forcedTheme="light", nunca queremos .dark
+  document.documentElement.classList.remove("dark");
+};
 
   return (
     <ColorThemeContext.Provider value={{ colorTheme, setColorTheme }}>

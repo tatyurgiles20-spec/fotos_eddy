@@ -10,9 +10,11 @@ export function GoogleSignInButton() {
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback?next=/admin`,
+        scopes: "https://www.googleapis.com/auth/drive.file",
         queryParams: {
-        prompt: 'select_account', // <-- Esto obliga a Google a mostrar el selector de cuentas siempre
-      },
+          prompt: "consent",       // fuerza a Google a reemitir el refresh token cada vez
+          access_type: "offline",  // pide el refresh token (no solo el access token de 1h)
+        },
       },
     });
   };
