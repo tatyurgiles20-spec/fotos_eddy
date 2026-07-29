@@ -179,3 +179,10 @@ a:not([class*="text-"]) {
   transform: translateY(-4px);
   box-shadow: var(--shadow-elevated);
 }
+.tag-handwritten {
+  font-family: var(--font-accent), cursive;
+  font-size: 1.35rem;
+  color: var(--primary); /* ← por eso se pierde sobre bg-primary */
+  transform: rotate(-2deg);
+  display: inline-block;
+}
