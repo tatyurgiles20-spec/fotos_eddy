@@ -21,7 +21,7 @@ if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     // forcedTheme="light" bloquea la inyección de la clase .dark de next-themes
-    <ThemeProvider attribute="class" defaultTheme="light" forcedTheme="light">
+    <ThemeProvider attribute="class" defaultTheme="light">
       <ColorThemeProvider>
         {children}
         {/* TEMPORAL: selector de color de marca */}

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers"; 
 import { Sora, Inter, Caveat } from "next/font/google";
+import { SocialFloatingBar } from "@/components/layout/SocialFloatingBar";
+
 const sora = Sora({
   subsets: ["latin"],
   variable: "--font-sora",
@@ -42,6 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
 <body className="bg-background text-foreground antialiased">
   <Providers>{children}</Providers>
+   <SocialFloatingBar />
 </body>
     </html>
   );

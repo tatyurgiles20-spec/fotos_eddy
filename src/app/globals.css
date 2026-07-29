@@ -158,7 +158,7 @@
   scrollbar-color: var(--border-strong) transparent;
 }
 
-a {
+a:not([class*="text-"]) {
   color: var(--primary);
 }
 

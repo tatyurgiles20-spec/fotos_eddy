@@ -48,9 +48,9 @@ export function SocialFloatingBar() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={social.label}
-          className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-110"
+         className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground! shadow-lg transition-transform hover:scale-110"
         >
-          <SocialIcon id={social.id} />
+        <SocialIcon id={social.id} />
         </a>
       ))}
     </div>

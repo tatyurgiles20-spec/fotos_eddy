@@ -5,11 +5,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 export const COLOR_THEMES = [
   { id: "navy", label: "Medianoche", hex: "#112140" },
-  { id: "cyan", label: "Cielo", hex: "#00AEEF" },
   { id: "magenta", label: "Fucsia", hex: "#E81E83" },
-  { id: "amber", label: "Ámbar", hex: "#FFC107" },
-  { id: "orange", label: "Naranja", hex: "#EB6100" },
-  { id: "carbon", label: "Carbón", hex: "#101010" },
 ] as const;
 
 export type ColorThemeId = (typeof COLOR_THEMES)[number]["id"];

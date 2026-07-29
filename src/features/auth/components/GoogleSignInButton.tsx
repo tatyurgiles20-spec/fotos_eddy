@@ -5,16 +5,12 @@ import { createClient } from "@/lib/supabase/client";
 export function GoogleSignInButton() {
   const supabase = createClient();
 
-  const handleSignIn = async () => {
+const handleSignIn = async () => {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback?next=/admin`,
-        scopes: "https://www.googleapis.com/auth/drive.file",
-        queryParams: {
-          prompt: "consent",       // fuerza a Google a reemitir el refresh token cada vez
-          access_type: "offline",  // pide el refresh token (no solo el access token de 1h)
-        },
+        // Quita el scope de Drive aquí
       },
     });
   };

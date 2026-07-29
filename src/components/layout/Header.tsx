@@ -44,7 +44,7 @@ export function Header() {
             </a>
           ))}
         </nav>
-
+        <ThemeToggle />
         
       </div>
     </header>
