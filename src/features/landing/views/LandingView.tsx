@@ -7,6 +7,7 @@ import { ServicesCarousel } from "@/features/landing/components/ServicesCarousel
 import { getFeaturedImages } from "@/features/landing/api/get-featured-images";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { NosotrosSection } from "@/features/landing/components/NosotrosSection";
 
 export async function LandingView() {
   const featuredImages = await getFeaturedImages("home_destacadas");
@@ -18,8 +19,10 @@ export async function LandingView() {
         <PromoCarousel />
         <ServicesCarousel />
 
+        <NosotrosSection/>
         <HeroSection />
         <ServicesSection />
+        
 
         {/* ── GALERÍA DE TRABAJOS DESTACADOS ── */}
         <section className="py-20">
