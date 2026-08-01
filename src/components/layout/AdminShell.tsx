@@ -8,6 +8,7 @@ import { ThemeToggle } from "@/components/layout/ThemeToggle";
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/imagenes", label: "Imágenes" },
+  { href: "/admin/carrusel", label: "Carrusel" },
 ];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
