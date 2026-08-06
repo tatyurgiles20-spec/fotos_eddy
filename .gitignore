@@ -39,7 +39,7 @@ yarn-error.log*
 # env & secrets (NUNCA SUBIR A GIT)
 .env*
 *.jsonc
-wrangler.jsonc
+wrangler copy.jsonc
 client_secret_*.json
 
 # vercel
