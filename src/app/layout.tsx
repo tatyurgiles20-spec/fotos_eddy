@@ -1,22 +1,28 @@
-import type { Metadata } from "next"; 
+import type { Metadata } from "next";
 import "./globals.css";
-import { Providers } from "./providers"; 
+import { Providers } from "./providers";
 import { Sora, Inter, Caveat } from "next/font/google";
 import { SocialFloatingBar } from "@/components/layout/SocialFloatingBar";
 
+// 1. Tipografías con variables CSS y pesos completos (incluido 400 para textos normales)
 const sora = Sora({
   subsets: ["latin"],
   variable: "--font-sora",
-  weight: ["600", "700", "800"],
+  weight: ["400", "600", "700", "800"],
+  display: "swap",
 });
+
 const caveat = Caveat({
   subsets: ["latin"],
   variable: "--font-caveat",
-  weight: ["600", "700"],
+  weight: ["400", "600", "700"],
+  display: "swap",
 });
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -24,11 +30,16 @@ export const metadata: Metadata = {
   description: "Landing y administración de imágenes de Nova Print",
 };
 
-// src/app/layout.tsx
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" suppressHydrationWarning>
+    // 2. Inyección de variables tipográficas en la etiqueta <html>
+    <html
+      lang="es"
+      className={`${sora.variable} ${inter.variable} ${caveat.variable}`}
+      suppressHydrationWarning
+    >
       <head>
+        {/* Script para evitar FOUC (parpadeo de tema) antes del renderizado */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -42,10 +53,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-<body className="bg-background text-foreground antialiased">
-  <Providers>{children}</Providers>
-   <SocialFloatingBar />
-</body>
+      <body className="bg-background text-foreground antialiased">
+        <Providers>{children}</Providers>
+        <SocialFloatingBar />
+      </body>
     </html>
   );
 }

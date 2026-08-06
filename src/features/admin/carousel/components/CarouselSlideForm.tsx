@@ -21,9 +21,12 @@ const FONT_OPTIONS: { value: FontFamily; label: string }[] = [
 ];
 
 const POSITION_OPTIONS: { value: TextPosition; label: string }[] = [
-  { value: "left", label: "Izquierda" },
-  { value: "center", label: "Centro" },
-  { value: "right", label: "Derecha" },
+  { value: "bottom-left", label: "Abajo · Izquierda" },
+  { value: "bottom-center", label: "Abajo · Centro" },
+  { value: "bottom-right", label: "Abajo · Derecha" },
+  { value: "middle-left", label: "Medio · Izquierda" },
+  { value: "middle-center", label: "Medio · Centro" },
+  { value: "middle-right", label: "Medio · Derecha" },
 ];
 
 type Props = {
@@ -45,7 +48,8 @@ const EMPTY_FORM = {
   fontFamily: "auto" as FontFamily,
   titleColor: null as string | null,
   subtitleColor: null as string | null,
-  textPosition: "left" as TextPosition,
+  textPosition: "bottom-left" as TextPosition,
+  showUnderline: true,
 };
 
 // Un color por defecto para cuando el admin activa el picker (no se guarda
@@ -72,6 +76,7 @@ export function CarouselSlideForm({ editingSlide, onCreate, onUpdate, onCancelEd
         titleColor: editingSlide.titleColor,
         subtitleColor: editingSlide.subtitleColor,
         textPosition: editingSlide.textPosition,
+        showUnderline: editingSlide.showUnderline,
       });
     } else {
       setForm(EMPTY_FORM);
@@ -94,6 +99,7 @@ export function CarouselSlideForm({ editingSlide, onCreate, onUpdate, onCancelEd
         title_color: form.titleColor,
         subtitle_color: form.subtitleColor,
         text_position: form.textPosition,
+        show_underline: form.showUnderline,
       };
 
       if (editingSlide) {
@@ -106,6 +112,11 @@ export function CarouselSlideForm({ editingSlide, onCreate, onUpdate, onCancelEd
       setSaving(false);
     }
   };
+
+  // Avisa si falta uno de los dos campos del botón: si solo se llena uno,
+  // el botón NO se muestra (es el motivo #1 de "el botón no aparece").
+  const buttonPartiallyFilled =
+    Boolean(form.buttonText.trim()) !== Boolean(form.buttonHref.trim());
 
   return (
     <div className="rounded-xl border border-border bg-card p-5">
@@ -125,6 +136,7 @@ export function CarouselSlideForm({ editingSlide, onCreate, onUpdate, onCancelEd
           titleColor={form.titleColor}
           subtitleColor={form.subtitleColor}
           textPosition={form.textPosition}
+          showUnderline={form.showUnderline}
         />
       </div>
 
@@ -152,8 +164,8 @@ export function CarouselSlideForm({ editingSlide, onCreate, onUpdate, onCancelEd
         className="mb-3 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
       />
 
-      {/* Color del título: automático (según el tema) o manual */}
-      <div className="mb-3 flex items-center gap-3 rounded-lg border border-border bg-background px-3 py-2">
+      {/* Color del título + subrayado decorativo opcional (usa el mismo color) */}
+      <div className="mb-3 flex flex-wrap items-center gap-3 rounded-lg border border-border bg-background px-3 py-2">
         <span className="text-sm text-muted-foreground">Color del título</span>
         <label className="flex items-center gap-1.5 text-xs">
           <input
@@ -170,9 +182,17 @@ export function CarouselSlideForm({ editingSlide, onCreate, onUpdate, onCancelEd
             type="color"
             value={form.titleColor}
             onChange={(e) => setForm((f) => ({ ...f, titleColor: e.target.value }))}
-            className="ml-auto h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
+            className="h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
           />
         )}
+        <label className="ml-auto flex items-center gap-1.5 text-xs">
+          <input
+            type="checkbox"
+            checked={form.showUnderline}
+            onChange={(e) => setForm((f) => ({ ...f, showUnderline: e.target.checked }))}
+          />
+          Subrayado decorativo
+        </label>
       </div>
 
       <input
@@ -232,7 +252,7 @@ export function CarouselSlideForm({ editingSlide, onCreate, onUpdate, onCancelEd
         </select>
       </div>
 
-      <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="mb-1 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <input
           type="text"
           placeholder="Texto del botón (opcional)"
@@ -259,6 +279,12 @@ export function CarouselSlideForm({ editingSlide, onCreate, onUpdate, onCancelEd
           ))}
         </select>
       </div>
+      {buttonPartiallyFilled && (
+        <p className="mb-3 text-xs text-warning">
+          Completa tanto el texto como el link del botón — si falta uno de los dos, el botón no se muestra en la landing.
+        </p>
+      )}
+      {!buttonPartiallyFilled && <div className="mb-4" />}
 
       <div className="flex gap-2">
         <button

@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
   const { data, error } = await supabase
     .from("carousel_slides")
     .select(
-      "id, carousel_key, image_id, alt_text, title, subtitle, button_text, button_href, button_style, font_family, title_color, subtitle_color, text_position, position, active, images ( id, direct_url )"
+      "id, carousel_key, image_id, alt_text, title, subtitle, button_text, button_href, button_style, font_family, title_color, subtitle_color, text_position, show_underline, position, active, images ( id, direct_url )"
     )
     .eq("carousel_key", carouselKey)
     .order("position", { ascending: true });
@@ -61,7 +61,8 @@ export async function POST(request: NextRequest) {
       font_family: body.font_family ?? null,
       title_color: body.title_color ?? null,
       subtitle_color: body.subtitle_color ?? null,
-      text_position: body.text_position ?? "left",
+      text_position: body.text_position ?? "bottom-left",
+      show_underline: body.show_underline ?? true,
       position: body.position ?? 0,
       active: body.active ?? true,
     })

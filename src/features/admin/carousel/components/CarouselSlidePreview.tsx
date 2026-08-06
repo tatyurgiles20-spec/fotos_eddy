@@ -10,20 +10,21 @@ const BUTTON_STYLES: Record<ButtonStyle, string> = {
   ghost: "text-white underline underline-offset-4",
 };
 
-// Se aplican con `style`, no con clases de Tailwind: así no depende de
-// que el JIT detecte una clase armada dinámicamente, y funciona siempre
-// que la variable CSS del font (--font-sora, --font-inter, --font-caveat)
-// esté cargada en el layout.
 const FONT_VARS: Record<Exclude<FontFamily, "auto">, string> = {
   display: "var(--font-sora)",
   body: "var(--font-inter)",
   accent: "var(--font-caveat)",
 };
 
+// left/right/center controlan la alineación horizontal; bottom/middle
+// controlan si el bloque de texto va pegado abajo o centrado verticalmente.
 const POSITION_CLASSES: Record<TextPosition, string> = {
-  left: "items-start text-left",
-  center: "items-center text-center",
-  right: "items-end text-right",
+  "bottom-left": "items-start text-left justify-end",
+  "bottom-center": "items-center text-center justify-end",
+  "bottom-right": "items-end text-right justify-end",
+  "middle-left": "items-start text-left justify-center",
+  "middle-center": "items-center text-center justify-center",
+  "middle-right": "items-end text-right justify-center",
 };
 
 type Props = {
@@ -37,6 +38,7 @@ type Props = {
   titleColor: string | null;
   subtitleColor: string | null;
   textPosition: TextPosition;
+  showUnderline: boolean;
 };
 
 export function CarouselSlidePreview({
@@ -50,13 +52,14 @@ export function CarouselSlidePreview({
   titleColor,
   subtitleColor,
   textPosition,
+  showUnderline,
 }: Props) {
   const fontStyle = fontFamily !== "auto" ? { fontFamily: FONT_VARS[fontFamily] } : undefined;
 
   return (
     <div>
       <p className="mb-2 text-sm font-medium text-muted-foreground">Vista previa</p>
-      <div className="relative h-[160px] w-full overflow-hidden rounded-2xl border border-border bg-card shadow-elevated sm:h-[220px]">
+      <div className="relative h-[180px] w-full overflow-hidden rounded-2xl border border-border bg-card shadow-elevated sm:h-[240px]">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -71,17 +74,25 @@ export function CarouselSlidePreview({
           </div>
         )}
 
-        {imageUrl && <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/5 to-transparent" />}
+        {imageUrl && <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-black/10" />}
 
         {imageUrl && (title || subtitle || buttonText) && (
-          <div className={`absolute inset-x-0 bottom-0 flex flex-col gap-2 p-4 ${POSITION_CLASSES[textPosition]}`}>
+          <div className={`absolute inset-0 flex flex-col gap-2 p-4 ${POSITION_CLASSES[textPosition]}`}>
             {title && (
-              <h2
-                className={`text-lg font-bold ${titleColor ? "" : "text-white"}`}
-                style={{ ...fontStyle, color: titleColor ?? undefined }}
-              >
-                {title}
-              </h2>
+              <div>
+                <h2
+                  className={`text-lg font-bold ${titleColor ? "" : "text-white"}`}
+                  style={{ ...fontStyle, color: titleColor ?? undefined }}
+                >
+                  {title}
+                </h2>
+                {showUnderline && (
+                  <div
+                    className="mt-1 h-1.5 w-16 rounded-full opacity-80"
+                    style={{ backgroundColor: titleColor ?? "currentColor", color: titleColor ?? undefined }}
+                  />
+                )}
+              </div>
             )}
             {subtitle && (
               <p

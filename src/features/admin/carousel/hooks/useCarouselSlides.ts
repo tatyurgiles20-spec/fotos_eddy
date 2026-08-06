@@ -15,6 +15,7 @@ export type CarouselSlideInput = {
   title_color?: string | null;
   subtitle_color?: string | null;
   text_position?: TextPosition;
+  show_underline?: boolean;
   position?: number;
   active?: boolean;
 };

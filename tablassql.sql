@@ -63,3 +63,34 @@ alter table carousel_slides
   add column if not exists text_position text not null default 'left'
     check (text_position in ('left', 'center', 'right'));
  
+
+
+ -- Ejecutar DESPUÉS de carousel_slides_layout.sql
+
+-- 0) FIX ERROR 42703: Agrega la columna updated_at que requiere el trigger set_updated_at()
+alter table carousel_slides
+  add column if not exists updated_at timestamptz default now();
+
+-- 1) Elimina PRIMERO el constraint viejo para que el UPDATE no falle
+alter table carousel_slides
+  drop constraint if exists carousel_slides_text_position_check;
+
+-- 2) Migra los valores existentes ('left'/'center'/'right' -> 'bottom-left'/etc.)
+update carousel_slides
+  set text_position = 'bottom-' || text_position
+  where text_position in ('left', 'center', 'right');
+
+-- 3) Agrega el nuevo check con las nuevas variantes ya permitidas
+alter table carousel_slides
+  add constraint carousel_slides_text_position_check
+    check (text_position in (
+      'bottom-left', 'bottom-center', 'bottom-right',
+      'middle-left', 'middle-center', 'middle-right'
+    ));
+
+alter table carousel_slides
+  alter column text_position set default 'bottom-left';
+
+-- 4) Subrayado decorativo bajo el título: encendido/apagado por slide
+alter table carousel_slides
+  add column if not exists show_underline boolean not null default true;

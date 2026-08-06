@@ -1,6 +1,12 @@
 export type ButtonStyle = "primary" | "secondary" | "outline" | "ghost";
 export type FontFamily = "auto" | "display" | "body" | "accent";
-export type TextPosition = "left" | "center" | "right";
+export type TextPosition =
+  | "bottom-left"
+  | "bottom-center"
+  | "bottom-right"
+  | "middle-left"
+  | "middle-center"
+  | "middle-right";
 
 export type CarouselSlide = {
   id: string;
@@ -17,6 +23,7 @@ export type CarouselSlide = {
   titleColor: string | null; // null = automático (hereda el tema)
   subtitleColor: string | null; // null = automático (hereda el tema)
   textPosition: TextPosition;
+  showUnderline: boolean;
   position: number;
   active: boolean;
 };
@@ -36,6 +43,7 @@ export type CarouselSlideRow = {
   title_color: string | null;
   subtitle_color: string | null;
   text_position: TextPosition;
+  show_underline: boolean;
   position: number;
   active: boolean;
   images: { direct_url: string } | null;
@@ -56,7 +64,8 @@ export function mapCarouselSlideRow(row: CarouselSlideRow): CarouselSlide {
     fontFamily: row.font_family ?? "auto",
     titleColor: row.title_color ?? null,
     subtitleColor: row.subtitle_color ?? null,
-    textPosition: row.text_position ?? "left",
+    textPosition: row.text_position ?? "bottom-left",
+    showUnderline: row.show_underline ?? true,
     position: row.position,
     active: row.active,
   };
