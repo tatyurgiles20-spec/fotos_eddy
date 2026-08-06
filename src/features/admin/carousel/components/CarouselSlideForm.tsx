@@ -6,6 +6,46 @@ import type { CarouselSlideInput } from "../hooks/useCarouselSlides";
 import { ImagePicker } from "./ImagePicker";
 import { CarouselSlidePreview } from "./CarouselSlidePreview";
 
+/* Componente de ayuda/tooltip para formularios */
+function InfoTooltip({ text }: { text: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="relative inline-flex items-center ml-1.5">
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        onMouseEnter={() => setIsOpen(true)}
+        onMouseLeave={() => setIsOpen(false)}
+        aria-label="Más información"
+        className="text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-4 h-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 16v-4" />
+          <path d="M12 8h.01" />
+        </svg>
+      </button>
+
+      {isOpen && (
+        <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 z-50 w-52 p-2.5 bg-popover text-popover-foreground border border-border text-xs rounded-lg shadow-xl pointer-events-none transition-all">
+          {text}
+          <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-popover" />
+        </div>
+      )}
+    </div>
+  );
+}
+
 const BUTTON_STYLE_OPTIONS: { value: ButtonStyle; label: string }[] = [
   { value: "primary", label: "Primario (relleno)" },
   { value: "secondary", label: "Secundario" },
@@ -52,9 +92,6 @@ const EMPTY_FORM = {
   showUnderline: true,
 };
 
-// Un color por defecto para cuando el admin activa el picker (no se guarda
-// hasta que realmente elija "color manual"; el estado sigue siendo null
-// mientras esté en automático).
 const DEFAULT_PICKED_COLOR = "#ffffff";
 
 export function CarouselSlideForm({ editingSlide, onCreate, onUpdate, onCancelEdit }: Props) {
@@ -113,8 +150,6 @@ export function CarouselSlideForm({ editingSlide, onCreate, onUpdate, onCancelEd
     }
   };
 
-  // Avisa si falta uno de los dos campos del botón: si solo se llena uno,
-  // el botón NO se muestra (es el motivo #1 de "el botón no aparece").
   const buttonPartiallyFilled =
     Boolean(form.buttonText.trim()) !== Boolean(form.buttonHref.trim());
 
@@ -141,6 +176,10 @@ export function CarouselSlideForm({ editingSlide, onCreate, onUpdate, onCancelEd
       </div>
 
       <div className="mb-4">
+        <div className="flex items-center mb-1">
+          <span className="text-xs font-medium text-muted-foreground">Imagen del Slide</span>
+          <InfoTooltip text="Selecciona la imagen de fondo que se mostrará en esta diapositiva del carrusel principal." />
+        </div>
         <ImagePicker
           selectedImageId={form.imageId || null}
           onSelect={(imageId, directUrl) =>
@@ -149,24 +188,42 @@ export function CarouselSlideForm({ editingSlide, onCreate, onUpdate, onCancelEd
         />
       </div>
 
-      <input
-        type="text"
-        placeholder="Texto alternativo (alt, obligatorio para SEO)"
-        value={form.altText}
-        onChange={(e) => setForm((f) => ({ ...f, altText: e.target.value }))}
-        className="mb-3 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
-      />
-      <input
-        type="text"
-        placeholder="Título (opcional)"
-        value={form.title}
-        onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-        className="mb-3 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
-      />
+      {/* Texto Alternativo (Alt) */}
+      <div className="mb-3">
+        <div className="flex items-center mb-1">
+          <label className="text-xs font-medium text-muted-foreground">Texto alternativo (alt)</label>
+          <InfoTooltip text="Descripción breve de la imagen necesaria para accesibilidad y posicionamiento en buscadores (SEO)." />
+        </div>
+        <input
+          type="text"
+          placeholder="Texto alternativo (alt, obligatorio para SEO)"
+          value={form.altText}
+          onChange={(e) => setForm((f) => ({ ...f, altText: e.target.value }))}
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+        />
+      </div>
 
-      {/* Color del título + subrayado decorativo opcional (usa el mismo color) */}
+      {/* Título */}
+      <div className="mb-3">
+        <div className="flex items-center mb-1">
+          <label className="text-xs font-medium text-muted-foreground">Título</label>
+          <InfoTooltip text="El encabezado principal que se superpondrá sobre la imagen." />
+        </div>
+        <input
+          type="text"
+          placeholder="Título (opcional)"
+          value={form.title}
+          onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+        />
+      </div>
+
+      {/* Color del título + subrayado decorativo */}
       <div className="mb-3 flex flex-wrap items-center gap-3 rounded-lg border border-border bg-background px-3 py-2">
-        <span className="text-sm text-muted-foreground">Color del título</span>
+        <div className="flex items-center">
+          <span className="text-sm text-muted-foreground">Color del título</span>
+          <InfoTooltip text="Elige 'Automático' para usar los colores del tema o selecciona un color personalizado." />
+        </div>
         <label className="flex items-center gap-1.5 text-xs">
           <input
             type="checkbox"
@@ -192,20 +249,31 @@ export function CarouselSlideForm({ editingSlide, onCreate, onUpdate, onCancelEd
             onChange={(e) => setForm((f) => ({ ...f, showUnderline: e.target.checked }))}
           />
           Subrayado decorativo
+          <InfoTooltip text="Añade una línea estética debajo del título con su mismo color." />
         </label>
       </div>
 
-      <input
-        type="text"
-        placeholder="Subtítulo (opcional)"
-        value={form.subtitle}
-        onChange={(e) => setForm((f) => ({ ...f, subtitle: e.target.value }))}
-        className="mb-3 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
-      />
+      {/* Subtítulo */}
+      <div className="mb-3">
+        <div className="flex items-center mb-1">
+          <label className="text-xs font-medium text-muted-foreground">Subtítulo</label>
+          <InfoTooltip text="Un texto secundario descriptivo debajo del título principal." />
+        </div>
+        <input
+          type="text"
+          placeholder="Subtítulo (opcional)"
+          value={form.subtitle}
+          onChange={(e) => setForm((f) => ({ ...f, subtitle: e.target.value }))}
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+        />
+      </div>
 
-      {/* Color del subtítulo: automático (según el tema) o manual */}
+      {/* Color del subtítulo */}
       <div className="mb-4 flex items-center gap-3 rounded-lg border border-border bg-background px-3 py-2">
-        <span className="text-sm text-muted-foreground">Color del subtítulo</span>
+        <div className="flex items-center">
+          <span className="text-sm text-muted-foreground">Color del subtítulo</span>
+          <InfoTooltip text="Ajusta el color del subtítulo o déjalo en automático." />
+        </div>
         <label className="flex items-center gap-1.5 text-xs">
           <input
             type="checkbox"
@@ -226,59 +294,94 @@ export function CarouselSlideForm({ editingSlide, onCreate, onUpdate, onCancelEd
         )}
       </div>
 
+      {/* Fuente y Posición */}
       <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <select
-          value={form.fontFamily}
-          onChange={(e) => setForm((f) => ({ ...f, fontFamily: e.target.value as FontFamily }))}
-          className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
-        >
-          {FONT_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+        <div>
+          <div className="flex items-center mb-1">
+            <label className="text-xs font-medium text-muted-foreground">Tipografía</label>
+            <InfoTooltip text="Define la familia de fuente aplicada a los textos de este slide." />
+          </div>
+          <select
+            value={form.fontFamily}
+            onChange={(e) => setForm((f) => ({ ...f, fontFamily: e.target.value as FontFamily }))}
+            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+          >
+            {FONT_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <select
-          value={form.textPosition}
-          onChange={(e) => setForm((f) => ({ ...f, textPosition: e.target.value as TextPosition }))}
-          className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
-        >
-          {POSITION_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+        <div>
+          <div className="flex items-center mb-1">
+            <label className="text-xs font-medium text-muted-foreground">Alineación del texto</label>
+            <InfoTooltip text="Ubica la caja de texto dentro de la imagen del carrusel." />
+          </div>
+          <select
+            value={form.textPosition}
+            onChange={(e) => setForm((f) => ({ ...f, textPosition: e.target.value as TextPosition }))}
+            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+          >
+            {POSITION_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
+      {/* Configuración del Botón */}
       <div className="mb-1 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <input
-          type="text"
-          placeholder="Texto del botón (opcional)"
-          value={form.buttonText}
-          onChange={(e) => setForm((f) => ({ ...f, buttonText: e.target.value }))}
-          className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
-        />
-        <input
-          type="text"
-          placeholder="Link del botón (ej. /galeria o https://...)"
-          value={form.buttonHref}
-          onChange={(e) => setForm((f) => ({ ...f, buttonHref: e.target.value }))}
-          className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
-        />
-        <select
-          value={form.buttonStyle}
-          onChange={(e) => setForm((f) => ({ ...f, buttonStyle: e.target.value as ButtonStyle }))}
-          className="rounded-lg border border-border bg-background px-3 py-2 text-sm sm:col-span-2"
-        >
-          {BUTTON_STYLE_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+        <div>
+          <div className="flex items-center mb-1">
+            <label className="text-xs font-medium text-muted-foreground">Texto del botón</label>
+            <InfoTooltip text="El texto que llamará a la acción (ej: 'Ver Galería')." />
+          </div>
+          <input
+            type="text"
+            placeholder="Texto del botón (opcional)"
+            value={form.buttonText}
+            onChange={(e) => setForm((f) => ({ ...f, buttonText: e.target.value }))}
+            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+          />
+        </div>
+
+        <div>
+          <div className="flex items-center mb-1">
+            <label className="text-xs font-medium text-muted-foreground">Enlace de destino</label>
+            <InfoTooltip text="Dirección a la que redirige al hacer clic (ej: /galeria o https://...)." />
+          </div>
+          <input
+            type="text"
+            placeholder="Link del botón (ej. /galeria o https://...)"
+            value={form.buttonHref}
+            onChange={(e) => setForm((f) => ({ ...f, buttonHref: e.target.value }))}
+            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+          />
+        </div>
+
+        <div className="sm:col-span-2">
+          <div className="flex items-center mb-1">
+            <label className="text-xs font-medium text-muted-foreground">Estilo visual del botón</label>
+            <InfoTooltip text="Cambia la apariencia gráfica del botón entre relleno, contorno o plano." />
+          </div>
+          <select
+            value={form.buttonStyle}
+            onChange={(e) => setForm((f) => ({ ...f, buttonStyle: e.target.value as ButtonStyle }))}
+            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+          >
+            {BUTTON_STYLE_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
+
       {buttonPartiallyFilled && (
         <p className="mb-3 text-xs text-warning">
           Completa tanto el texto como el link del botón — si falta uno de los dos, el botón no se muestra en la landing.
