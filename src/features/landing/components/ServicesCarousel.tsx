@@ -2,49 +2,27 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import type { CategoryHighlight } from "@/types/category-highlight";
 
 type ServiceSlide = {
   id: string;
   title: string;
   description: string;
   imageUrl: string;
+  href: string;
 };
 
-const DEFAULT_SERVICES: ServiceSlide[] = [
-  {
-    id: "1",
-    title: "Sesiones fotográficas",
-    description: "Estudio, retrato y producto",
-    imageUrl:
-      "https://images.unsplash.com/photo-1554080353-a576cf803bda?q=80&w=800&auto=format&fit=crop",
-  },
-  {
-    id: "2",
-    title: "Tazas & Regalos",
-    description: "Personalizados con tu foto",
-    imageUrl:
-      "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=800&auto=format&fit=crop",
-  },
-  {
-    id: "3",
-    title: "Ropa & Estampados",
-    description: "Impresión de alta definición",
-    imageUrl:
-      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop",
-  },
-  {
-    id: "4",
-    title: "Cuadros & Decoración",
-    description: "Convierte tus fotos en arte",
-    imageUrl:
-      "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=800&auto=format&fit=crop",
-  },
-];
-
-interface ServicesCarouselProps {
-  services?: ServiceSlide[];
-  title?: string;
-  autoPlayInterval?: number;
+function toSlides(highlights: CategoryHighlight[]): ServiceSlide[] {
+  return highlights
+    .filter((h) => h.product_categories && h.images)
+    .map((h) => ({
+      id: h.id,
+      title: h.product_categories!.name,
+      description: h.description ?? "",
+      imageUrl: h.images!.direct_url,
+      href: `${h.target_type === "service" ? "/servicios" : "/productos"}?categoria=${h.product_categories!.slug}`,
+    }));
 }
 
 // Calcula la distancia circular más corta entre el índice actual y la tarjeta objetivo
@@ -55,11 +33,19 @@ function getCircularOffset(index: number, current: number, length: number) {
   return diff;
 }
 
+interface ServicesCarouselProps {
+  highlights: CategoryHighlight[];
+  title?: string;
+  autoPlayInterval?: number;
+}
+
 export function ServicesCarousel({
-  services = DEFAULT_SERVICES,
-  title = "Carrusel con los servicios que ofrecemos",
+  highlights,
+  title = "Explora nuestras categorías",
   autoPlayInterval = 3500,
 }: ServicesCarouselProps) {
+  const router = useRouter();
+  const services = toSlides(highlights);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
@@ -80,14 +66,12 @@ export function ServicesCarousel({
     setCurrentIndex((prev) => (prev - 1 + length) % length);
   }, [length]);
 
-  // Autoplay continuo (se pausa al pasar el mouse o tocar)
   useEffect(() => {
     if (isPaused || length <= 1) return;
     const timer = setInterval(goNext, autoPlayInterval);
     return () => clearInterval(timer);
   }, [isPaused, autoPlayInterval, goNext, length]);
 
-  // Manejo de gestos táctiles para móviles
   const handleTouchStart = (e: React.TouchEvent) => {
     setIsPaused(true);
     touchStartX.current = e.touches[0].clientX;
@@ -103,6 +87,16 @@ export function ServicesCarousel({
     touchStartX.current = null;
   };
 
+  const handleCardClick = (index: number, offset: number, href: string) => {
+    if (offset === 0) {
+      router.push(href);
+    } else {
+      goTo(index);
+    }
+  };
+
+  if (length === 0) return null;
+
   return (
     <section className="mx-auto max-w-7xl px-6 py-10 overflow-hidden">
       <div className="mb-6 flex items-center justify-between">
@@ -111,7 +105,6 @@ export function ServicesCarousel({
         </h3>
       </div>
 
-      {/* Escenario 3D */}
       <div
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
@@ -123,29 +116,17 @@ export function ServicesCarousel({
         {services.map((service, index) => {
           const offset = getCircularOffset(index, currentIndex, length);
           const absOffset = Math.abs(offset);
-
-          // Máximo 3 visibles: la central (0) y una a cada lado (-1 y 1)
           const isVisible = absOffset <= 1;
-
-          // Separación horizontal (%)
           const translateX = offset * 75;
-
-          // Tamaño y escala
           const scale = offset === 0 ? 1 : 0.82;
-
-          // Rotación 3D Cover Flow tipo libro
           const rotateY = offset * -35;
-
-          // Prioridad de capas (Z-index)
           const zIndex = 10 - absOffset;
-
-          // Opacidad suave
           const opacity = !isVisible ? 0 : offset === 0 ? 1 : 0.7;
 
           return (
             <div
               key={service.id}
-              onClick={() => goTo(index)}
+              onClick={() => handleCardClick(index, offset, service.href)}
               style={{
                 transform: `translateX(${translateX}%) scale(${scale}) rotateY(${rotateY}deg)`,
                 zIndex,
@@ -166,7 +147,6 @@ export function ServicesCarousel({
               />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-              {/* Información de la tarjeta activa */}
               <div
                 style={{
                   opacity: offset === 0 ? 1 : 0,
@@ -177,7 +157,7 @@ export function ServicesCarousel({
                 <h4 className="font-display text-base sm:text-lg font-bold text-white">
                   {service.title}
                 </h4>
-                <p className="mt-1 text-xs sm:text-sm text-white/80">
+                <p className="mt-1 text-xs sm:text-sm text-white/80 line-clamp-2">
                   {service.description}
                 </p>
               </div>
@@ -186,7 +166,6 @@ export function ServicesCarousel({
         })}
       </div>
 
-      {/* Indicadores inferiores */}
       <div className="mt-8 flex justify-center gap-2">
         {services.map((service, index) => (
           <button

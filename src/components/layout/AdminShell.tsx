@@ -9,6 +9,8 @@ const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/imagenes", label: "Imágenes" },
   { href: "/admin/carrusel", label: "Carrusel" },
+   { href: "/admin/productos", label: "Productos" },
+   { href: "/admin/categorias-destacadas", label: "Carrusel de categorías" },
 ];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
