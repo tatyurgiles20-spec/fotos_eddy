@@ -11,7 +11,25 @@ function slugify(text: string) {
     .replace(/(^-|-$)/g, "");
 }
 
-// ... GET queda igual ...
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const categoryId = searchParams.get("categoryId");
+  const includeUnpublished = searchParams.get("all") === "true"; // usado por el admin
+
+  const supabase = createAdminClient();
+  let query = supabase
+    .from("products")
+    .select("*, product_images(image_id, sort_order, images(direct_url, alt_text))")
+    .is("deleted_at", null)
+    .order("sort_order");
+
+  if (categoryId) query = query.eq("category_id", categoryId);
+  if (!includeUnpublished) query = query.eq("is_published", true);
+
+  const { data, error } = await query;
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json(data);
+}
 
 export async function POST(request: Request) {
   const { authorized } = await requireAdmin();
