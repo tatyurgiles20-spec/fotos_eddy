@@ -1,11 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-// Nota: alinea esta firma con la convención que uses en tus otros [id]/route.ts
-// (params como objeto directo o como Promise, según tu versión de Next).
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
 
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   const { authorized } = await requireAdmin();
   if (!authorized) return NextResponse.json({ error: "No autorizado" }, { status: 403 });
 
@@ -28,7 +30,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   const { data, error } = await supabase
     .from("customers")
     .update(updates)
-    .eq("id", params.id)
+    .eq("id", id)
     .select()
     .single();
 
@@ -42,7 +44,12 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   return NextResponse.json(data);
 }
 
-export async function DELETE(_request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+
   const { authorized } = await requireAdmin();
   if (!authorized) return NextResponse.json({ error: "No autorizado" }, { status: 403 });
 
@@ -52,7 +59,7 @@ export async function DELETE(_request: Request, { params }: { params: { id: stri
   const { error } = await supabase
     .from("customers")
     .update({ deleted_at: new Date().toISOString() })
-    .eq("id", params.id);
+    .eq("id", id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
