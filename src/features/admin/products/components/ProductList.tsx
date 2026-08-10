@@ -15,9 +15,10 @@ type Props = {
   onEdit: (product: ProductRow) => void;
   onDelete: (id: string) => void;
   onTogglePublish: (product: ProductRow) => void;
+  onInventory: (product: ProductRow) => void;
 };
 
-export function ProductGrid({ products, onEdit, onDelete, onTogglePublish }: Props) {
+export function ProductGrid({ products, onEdit, onDelete, onTogglePublish, onInventory }: Props) {
   if (products.length === 0) {
     return <p className="text-sm text-muted-foreground">Todavía no hay productos en esta categoría.</p>;
   }
@@ -76,7 +77,15 @@ export function ProductGrid({ products, onEdit, onDelete, onTogglePublish }: Pro
               </span>
 
               {/* Stock - desktop */}
-              <span className="hidden text-sm text-muted-foreground sm:block">
+              <span
+                className={`hidden text-sm sm:block ${
+                  product.type === "product" && product.stock <= 0
+                    ? "font-semibold text-destructive"
+                    : product.type === "product" && product.stock <= 5
+                      ? "font-semibold text-amber-600"
+                      : "text-muted-foreground"
+                }`}
+              >
                 {product.type === "product" ? product.stock : "—"}
               </span>
 
@@ -104,6 +113,15 @@ export function ProductGrid({ products, onEdit, onDelete, onTogglePublish }: Pro
 
               {/* Acciones */}
               <div className="col-span-3 flex items-center justify-end gap-3 pt-1 text-xs sm:col-span-1 sm:pt-0">
+                {product.type === "product" && (
+                  <button
+                    onClick={() => onInventory(product)}
+                    title="Registrar entrada o salida de stock"
+                    className="font-medium text-blue-600 hover:underline dark:text-blue-400"
+                  >
+                    📦 Inventario
+                  </button>
+                )}
                 <button onClick={() => onEdit(product)} className="font-medium text-primary hover:underline">
                   Editar
                 </button>

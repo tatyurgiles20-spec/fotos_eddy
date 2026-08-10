@@ -107,3 +107,24 @@ export async function deleteImageFromDrive(fileId: string) {
     throw new Error(`Error eliminando de Drive: ${await res.text()}`);
   }
 }
+
+// Reutiliza (o crea la primera vez) una carpeta de Drive de un solo propósito,
+// identificada por una "key" propia (ej: "frames"), guardando su ID en Supabase.
+export async function getOrCreateDriveFolder(key: string, name: string): Promise<string> {
+  const supabase = createAdminClient();
+
+  const { data: existing } = await supabase
+    .from("drive_folders")
+    .select("folder_id")
+    .eq("key", key)
+    .maybeSingle();
+
+  if (existing?.folder_id) return existing.folder_id;
+
+  const folderId = await createDriveFolder(name);
+
+  const { error } = await supabase.from("drive_folders").insert({ key, folder_id: folderId });
+  if (error) throw new Error(`Error guardando carpeta de Drive: ${error.message}`);
+
+  return folderId;
+}

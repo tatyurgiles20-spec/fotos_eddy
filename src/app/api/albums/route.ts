@@ -16,11 +16,18 @@ export async function GET() {
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("albums")
-    .select("*")
+    .select("*, images(count)")
     .order("sort_order", { ascending: true });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data);
+
+  // Supabase devuelve el conteo embebido como images: [{ count: N }] — lo aplanamos
+  const withCounts = (data ?? []).map(({ images, ...album }) => ({
+    ...album,
+    image_count: Array.isArray(images) ? (images[0]?.count ?? 0) : 0,
+  }));
+
+  return NextResponse.json(withCounts);
 }
 
 export async function POST(request: Request) {
@@ -44,7 +51,7 @@ export async function POST(request: Request) {
       .single();
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json(data);
+    return NextResponse.json({ ...data, image_count: 0 });
   } catch (err) {
     console.error("Error creando álbum:", err);
     const message = err instanceof Error ? err.message : "Error desconocido";

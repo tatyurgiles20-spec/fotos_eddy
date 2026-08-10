@@ -5,6 +5,7 @@ export type Album = {
   drive_folder_id: string;
   sort_order: number;
   created_at: string;
+  image_count: number;
 };
 
 export type ImageItem = {

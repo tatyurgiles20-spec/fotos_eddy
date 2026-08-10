@@ -1,7 +1,19 @@
-import { LandingView } from "@/features/landing/views/LandingView";
-import {NosotrosSection} from "@/features/landing/components/NosotrosSection";
+import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/Header";
+import { SocialFloatingBar } from "@/components/layout/SocialFloatingBar";
+import { LandingView } from "@/features/landing/views/LandingView"; 
 
 export default function Home() {
-  return <LandingView />;
-  < NosotrosSection/>;
+  return (
+    <div>
+      <Header />
+
+      <main>
+        <LandingView />
+      </main>
+
+      <Footer />
+      <SocialFloatingBar />
+    </div>
+  );
 }

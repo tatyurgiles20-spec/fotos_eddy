@@ -13,8 +13,7 @@ export async function ProductDetailView({ slug }: { slug: string }) {
   );
 
   return (
-    <>
-      <Header />
+    <> 
       <main className="mx-auto max-w-5xl px-6 py-16">
         <div className="grid gap-10 md:grid-cols-2">
           <div className="grid gap-3">
@@ -52,8 +51,7 @@ export async function ProductDetailView({ slug }: { slug: string }) {
             )}
           </div>
         </div>
-      </main>
-      <Footer />
+      </main> 
     </>
   );
 }

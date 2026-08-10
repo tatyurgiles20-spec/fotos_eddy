@@ -16,8 +16,7 @@ export async function ServicesView({ categorySlug }: { categorySlug?: string }) 
   const activeCategory = categories.find((c) => c.slug === categorySlug);
 
   return (
-    <>
-      <Header />
+    <> 
       <main className="mx-auto max-w-7xl px-6 py-16">
         <div className="mb-10 text-center">
           <span className="text-xs font-semibold uppercase tracking-widest text-primary">Catálogo</span>
@@ -44,8 +43,7 @@ export async function ServicesView({ categorySlug }: { categorySlug?: string }) 
             ))}
           </div>
         )}
-      </main>
-      <Footer />
+      </main> 
     </>
   );
 }

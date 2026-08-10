@@ -14,7 +14,7 @@ export type Product = {
   name: string;
   slug: string;
   description: string | null;
-  meta_description: string | null; 
+  meta_description: string | null;
   type: ProductType;
   sku: string | null;
   purchase_price: number | null;
@@ -36,7 +36,11 @@ export type InventoryMovement = {
   reason: string | null;
   created_by: string | null;
   created_at: string;
+  updated_at: string | null;
+  // presente cuando la API hace el join con products (listas de ingresos/egresos)
+  products?: { name: string; sku: string | null; type: ProductType } | null;
 };
+
 export type ProductWithImages = Product & {
   product_images?: {
     image_id: string;

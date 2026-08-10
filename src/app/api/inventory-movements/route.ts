@@ -7,16 +7,19 @@ export async function GET(request: Request) {
   if (!authorized) return NextResponse.json({ error: "No autorizado" }, { status: 403 });
 
   const { searchParams } = new URL(request.url);
-  const productId = searchParams.get("productId");
-  if (!productId) return NextResponse.json({ error: "Falta productId" }, { status: 400 });
+  const productId = searchParams.get("productId"); // opcional: filtrar por un producto puntual
+  const movementType = searchParams.get("movementType"); // opcional: "in" | "out"
 
   const supabase = createAdminClient();
-  const { data, error } = await supabase
+  let query = supabase
     .from("inventory_movements")
-    .select("*")
-    .eq("product_id", productId)
+    .select("*, products(name, sku, type)")
     .order("created_at", { ascending: false });
 
+  if (productId) query = query.eq("product_id", productId);
+  if (movementType === "in" || movementType === "out") query = query.eq("movement_type", movementType);
+
+  const { data, error } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json(data);
 }
@@ -34,7 +37,6 @@ export async function POST(request: Request) {
 
   const supabase = createAdminClient();
 
-  // buscamos el id de admin a partir del email de auth (mismo patrón que require-admin.ts)
   const { data: admin } = await supabase
     .from("admins")
     .select("id")
@@ -51,7 +53,7 @@ export async function POST(request: Request) {
       reason: reason ?? null,
       created_by: admin?.id ?? null,
     })
-    .select()
+    .select("*, products(name, sku, type)")
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

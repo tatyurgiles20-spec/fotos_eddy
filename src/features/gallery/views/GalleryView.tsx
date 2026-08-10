@@ -16,9 +16,7 @@ export async function GalleryView() {
             <AlbumCard key={album.id} album={album} />
           ))}
         </div>
-      </main>
-
-      <SocialFloatingBar />
+      </main> 
     </>
   );
 }

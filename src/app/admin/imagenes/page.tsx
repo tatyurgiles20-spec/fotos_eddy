@@ -1,5 +1,5 @@
-import { ImagesManagerView } from "@/features/admin/images/views/ImagesManagerView";
+import { AlbumsManagerView } from "@/features/admin/images/views/AlbumsManagerView";
 
-export default function ImagesPage() {
-  return <ImagesManagerView />;
+export default function ImagenesPage() {
+  return <AlbumsManagerView />;
 }

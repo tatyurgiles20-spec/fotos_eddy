@@ -11,8 +11,7 @@ export async function AlbumView({ slug }: { slug: string }) {
   const { album, images } = result;
 
   return (
-    <>
-    <Header />
+    <> 
       <main className="mx-auto max-w-6xl px-6 py-16">
         <a href="/galeria" className="text-sm font-medium text-muted-foreground hover:text-foreground">
           ← Todos los álbumes
@@ -30,9 +29,7 @@ export async function AlbumView({ slug }: { slug: string }) {
             />
           ))}
         </div>
-      </main>
-<Footer />
-      <SocialFloatingBar />
+      </main> 
     </>
   );
 }

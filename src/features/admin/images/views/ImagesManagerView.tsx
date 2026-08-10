@@ -6,6 +6,7 @@ import { useImages } from "@/features/admin/images/hooks/useImages";
 import { useSections } from "@/features/admin/images/hooks/useSections";
 import { ImageUploader } from "@/features/admin/images/components/ImageUploader";
 import { ImageGrid } from "@/features/admin/images/components/ImageGrid";
+import { Modal } from "@/components/ui/Modal";
 
 export function ImagesManagerView() {
   const { albums, createAlbum } = useAlbums();
@@ -13,6 +14,7 @@ export function ImagesManagerView() {
   const { images, uploadImage, deleteImage } = useImages(selectedAlbumId);
   const { sections } = useSections();
   const [newAlbumName, setNewAlbumName] = useState("");
+  const [showUploader, setShowUploader] = useState(false);
 
   const handleCreateAlbum = async () => {
     if (!newAlbumName.trim()) return;
@@ -22,7 +24,17 @@ export function ImagesManagerView() {
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-bold tracking-tight">Imágenes</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="font-display text-2xl font-bold tracking-tight">Imágenes</h1>
+        <button
+          onClick={() => setShowUploader(true)}
+          disabled={!selectedAlbumId}
+          title={!selectedAlbumId ? "Selecciona un álbum primero" : undefined}
+          className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-40"
+        >
+          + Subir imágenes
+        </button>
+      </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
         {albums.map((album) => (
@@ -56,13 +68,19 @@ export function ImagesManagerView() {
         </div>
       </div>
 
-      {selectedAlbumId ? (
-        <div className="mt-8 grid gap-6 md:grid-cols-[300px_1fr]">
+      {showUploader && selectedAlbumId && (
+        <Modal onClose={() => setShowUploader(false)} maxWidth="max-w-lg">
           <ImageUploader
             albumId={selectedAlbumId}
             sections={sections}
             onUpload={(file, altText, sectionIds) => uploadImage(file, selectedAlbumId, altText, sectionIds)}
+            onAllUploaded={() => setShowUploader(false)}
           />
+        </Modal>
+      )}
+
+      {selectedAlbumId ? (
+        <div className="mt-8">
           <ImageGrid images={images} onDelete={deleteImage} />
         </div>
       ) : (

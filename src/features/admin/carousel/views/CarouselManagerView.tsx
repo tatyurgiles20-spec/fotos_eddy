@@ -5,38 +5,53 @@ import type { CarouselSlide } from "@/types/carousel";
 import { useCarouselSlides } from "../hooks/useCarouselSlides";
 import { CarouselSlideForm } from "../components/CarouselSlideForm";
 import { CarouselSlideList } from "../components/CarouselSlideList";
+import { Modal } from "@/components/ui/Modal";
 
 export function CarouselManagerView() {
   const { slides, loading, createSlide, updateSlide, deleteSlide, moveSlide } =
     useCarouselSlides("promo");
-  const [editingSlide, setEditingSlide] = useState<CarouselSlide | null>(null);
+  const [editingSlide, setEditingSlide] = useState<CarouselSlide | null | undefined>(undefined); // undefined = modal cerrado
 
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[380px_1fr]">
-      <CarouselSlideForm
-        editingSlide={editingSlide}
-        onCreate={createSlide}
-        onUpdate={async (id, input) => {
-          await updateSlide(id, input);
-          setEditingSlide(null);
-        }}
-        onCancelEdit={() => setEditingSlide(null)}
-      />
-
-      <div>
-        <p className="mb-3 font-display text-lg font-bold">Slides del carrusel promocional</p>
-        {loading ? (
-          <p className="text-sm text-muted-foreground">Cargando...</p>
-        ) : (
-          <CarouselSlideList
-            slides={slides}
-            onEdit={setEditingSlide}
-            onDelete={deleteSlide}
-            onMove={moveSlide}
-            onToggleActive={(slide) => updateSlide(slide.id, { active: !slide.active })}
-          />
-        )}
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <p className="font-display text-2xl font-bold">Slides del carrusel promocional</p>
+        <button
+          onClick={() => setEditingSlide(null)}
+          className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+        >
+          + Agregar slide
+        </button>
       </div>
+
+      {editingSlide !== undefined && (
+        <Modal onClose={() => setEditingSlide(undefined)} maxWidth="max-w-2xl">
+          <CarouselSlideForm
+            editingSlide={editingSlide}
+            onCreate={async (input) => {
+              await createSlide(input);
+              setEditingSlide(undefined);
+            }}
+            onUpdate={async (id, input) => {
+              await updateSlide(id, input);
+              setEditingSlide(undefined);
+            }}
+            onCancelEdit={() => setEditingSlide(undefined)}
+          />
+        </Modal>
+      )}
+
+      {loading ? (
+        <p className="text-sm text-muted-foreground">Cargando...</p>
+      ) : (
+        <CarouselSlideList
+          slides={slides}
+          onEdit={(slide) => setEditingSlide(slide)}
+          onDelete={deleteSlide}
+          onMove={moveSlide}
+          onToggleActive={(slide) => updateSlide(slide.id, { active: !slide.active })}
+        />
+      )}
     </div>
   );
 }

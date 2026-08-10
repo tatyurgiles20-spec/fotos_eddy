@@ -1,3 +1,6 @@
+import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/Header";
+import { SocialFloatingBar } from "@/components/layout/SocialFloatingBar";
 import { ProductsView } from "@/features/products/views/ProductsView";
 
 export default async function ProductosPage({
@@ -6,5 +9,17 @@ export default async function ProductosPage({
   searchParams: Promise<{ categoria?: string }>;
 }) {
   const { categoria } = await searchParams;
-  return <ProductsView categorySlug={categoria} />;
+
+  return (
+    <div>
+      <Header />
+
+      <main className="min-h-[calc(100vh-4rem)]">
+        <ProductsView categorySlug={categoria} />
+      </main>
+
+      <Footer />
+      <SocialFloatingBar />
+    </div>
+  );
 }
