@@ -4,6 +4,15 @@ import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { CarouselSlide, FontFamily, TextPosition } from "@/types/carousel";
+import {
+  getSlideBackgroundColor,
+  getTextStyle,
+  getUnderlineColor,
+  getTextPanelStyle,
+  getOverlayContainerStyle,
+  getOverlayZIndex,
+  getTitleZIndex,
+} from "@/lib/carousel-style";
 
 interface PromoCarouselProps {
   slides: CarouselSlide[];
@@ -27,8 +36,6 @@ const FONT_VARS: Record<Exclude<FontFamily, "auto">, string> = {
   accent: "var(--font-caveat)",
 };
 
-// left/right/center: alineación horizontal. bottom/middle: si el bloque
-// de texto va pegado abajo (como antes) o centrado verticalmente (nuevo).
 const POSITION_CLASSES: Record<TextPosition, string> = {
   "bottom-left": "items-start text-left justify-end",
   "bottom-center": "items-center text-center justify-end",
@@ -38,9 +45,6 @@ const POSITION_CLASSES: Record<TextPosition, string> = {
   "middle-right": "items-end text-right justify-center",
 };
 
-// Padding vertical del bloque de texto: el "bottom" necesita el padding
-// asimétrico original para despegarse del borde; el "middle" no lo necesita
-// porque justify-center ya lo separa de ambos bordes por igual.
 const POSITION_PADDING: Record<TextPosition, string> = {
   "bottom-left": "pb-16 pt-20 lg:pb-24",
   "bottom-center": "pb-16 pt-20 lg:pb-24",
@@ -77,14 +81,13 @@ export function PromoCarousel({ slides, autoPlayInterval = 5000 }: PromoCarousel
       onTouchStart={() => setIsPaused(true)}
       onTouchEnd={() => setIsPaused(false)}
     >
-      {/* Altura de Hero: 85vh en escritorio (mínimo 600px), 520px en móvil */}
       <div className="relative h-[520px] min-h-[520px] w-full sm:h-[650px] lg:h-[85vh] lg:min-h-[620px]">
         {slides.map((slide, i) => {
           const hasButton = Boolean(slide.buttonText?.trim() && slide.buttonHref?.trim());
           const isExternal = hasButton ? !slide.buttonHref!.startsWith("/") : false;
-const buttonClassName = `relative z-10 inline-flex items-center justify-center rounded-full px-8 py-3.5 text-base font-bold transition-all duration-300 ${
-  BUTTON_STYLES[slide.buttonStyle] ?? BUTTON_STYLES.primary
-}`;
+          const buttonClassName = `relative z-10 inline-flex items-center justify-center rounded-full px-8 py-3.5 text-base font-bold transition-all duration-300 ${
+            BUTTON_STYLES[slide.buttonStyle] ?? BUTTON_STYLES.primary
+          }`;
           const fontStyle =
             slide.fontFamily !== "auto" ? { fontFamily: FONT_VARS[slide.fontFamily] } : undefined;
           const positionClass = POSITION_CLASSES[slide.textPosition] ?? POSITION_CLASSES["bottom-left"];
@@ -96,12 +99,24 @@ const buttonClassName = `relative z-10 inline-flex items-center justify-center r
               ? "ml-auto"
               : "mr-auto";
 
+          const titleStyle = getTextStyle(slide.titleColor, slide.titleGradient, fontStyle);
+          const subtitleStyle = getTextStyle(slide.subtitleColor, slide.subtitleGradient, fontStyle);
+          const underlineColor = getUnderlineColor(slide.titleColor, slide.titleGradient);
+          const isTitleAuto = !slide.titleColor && !slide.titleGradient;
+          const isSubtitleAuto = !slide.subtitleColor && !slide.subtitleGradient;
+          const textPanelStyle = getTextPanelStyle(slide.textBackgroundColor);
+const overlayContainerStyle = slide.overlayImageUrl
+  ? getOverlayContainerStyle(slide.overlayPosition, slide.overlayWidth)
+  : undefined;
+const overlayZ = getOverlayZIndex(slide.overlayLayer);
+const titleZ = getTitleZIndex(slide.overlayLayer);
           return (
             <div
               key={slide.id}
               className={`absolute inset-0 transition-all duration-1000 ease-out ${
                 i === index ? "opacity-100 scale-100 z-10" : "pointer-events-none opacity-0 scale-105 z-0"
               }`}
+              style={{ backgroundColor: getSlideBackgroundColor(slide.backgroundColor) }}
             >
               {/* Imagen principal */}
               <Image
@@ -113,74 +128,76 @@ const buttonClassName = `relative z-10 inline-flex items-center justify-center r
                 priority={i === 0}
               />
 
-              {/* Degradado — pointer-events-none para nunca bloquear clics del botón */}
+              {/* Degradado de contraste general */}
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20 md:bg-gradient-to-r md:from-black/85 md:via-black/40 md:to-transparent" />
 
               {/* Contenido del Slide */}
               {(slide.title || slide.subtitle || hasButton) && (
                 <div className="relative z-10 mx-auto h-full max-w-7xl px-6 sm:px-10 lg:px-12">
                   <div className={`flex h-full flex-col ${paddingClass} ${positionClass}`}>
-                    {/* Badge destacado decorativo */}
-                    <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 backdrop-blur-md">
-                      <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-                      <span className="text-xs font-semibold uppercase tracking-widest text-white">
-                        Destacado
-                      </span>
-                    </div>
+ 
+                    {/* Panel de texto: si hay textBackgroundColor, envuelve título+subtítulo */}
+<div
+  className={textPanelStyle ? "rounded-xl px-4 py-3 sm:px-5 sm:py-4" : undefined}
+  style={textPanelStyle}
+>
+  {slide.overlayImageUrl && (
+    <div style={{ ...overlayContainerStyle, zIndex: overlayZ }}>
+      <img
+        src={slide.overlayImageUrl}
+        alt=""
+        style={{ width: "100%", height: "auto", display: "block" }}
+      />
+    </div>
+  )}
 
-                    {/* Título con subrayado opcional, del mismo color que el texto */}
-                    {slide.title && (
-                      <div className="relative max-w-3xl">
-                        <h1
-                          className={`text-3xl font-extrabold leading-[1.15] sm:text-5xl lg:text-6xl drop-shadow-lg ${
-                            slide.titleColor ? "" : "text-white"
-                          }`}
-                          style={{ ...fontStyle, color: slide.titleColor ?? undefined }}
-                        >
-                          {slide.title}
-                        </h1>
+  {slide.title && (
+    <div className="relative max-w-3xl" style={{ zIndex: titleZ }}>
+      <h1
+        className={`text-3xl font-extrabold leading-[1.15] sm:text-5xl lg:text-6xl drop-shadow-lg ${
+          isTitleAuto ? "text-white" : ""
+        }`}
+        style={titleStyle}
+      >
+        {slide.title}
+      </h1>
 
-                        {slide.showUnderline && (
-                          <div
-                            className={`mt-2 h-3 w-36 sm:w-48 lg:w-64 ${underlineAlign}`}
-                            style={{ color: slide.titleColor ?? undefined }}
-                          >
-                            <svg
-                              viewBox="0 0 250 20"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                              className={`h-full w-full ${slide.titleColor ? "" : "text-primary"}`}
-                            >
-                              <path
-                                d="M3 14C50 4 150 3 247 11M15 17C80 9 170 8 230 15"
-                                stroke="currentColor"
-                                strokeWidth="5"
-                                strokeLinecap="round"
-                              />
-                            </svg>
-                          </div>
-                        )}
-                      </div>
-                    )}
+      {slide.showUnderline && (
+        <div className={`mt-2 h-3 w-36 sm:w-48 lg:w-64 ${underlineAlign}`} style={{ color: underlineColor }}>
+          <svg
+            viewBox="0 0 250 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className={`h-full w-full ${underlineColor ? "" : "text-primary"}`}
+          >
+            <path
+              d="M3 14C50 4 150 3 247 11M15 17C80 9 170 8 230 15"
+              stroke="currentColor"
+              strokeWidth="5"
+              strokeLinecap="round"
+            />
+          </svg>
+        </div>
+      )}
+    </div>
+  )}
 
-                    {/* Subtítulo */}
-                    {slide.subtitle && (
-                      <p
-                        className={`mt-4 max-w-xl text-base leading-relaxed sm:text-lg lg:text-xl drop-shadow ${
-                          slide.subtitleColor ? "" : "text-white/90"
-                        }`}
-                        style={{ ...fontStyle, color: slide.subtitleColor ?? undefined }}
-                      >
-                        {slide.subtitle}
-                      </p>
-                    )}
-
-                    {/* Botón Call to Action */}
+  {slide.subtitle && (
+    <p
+      className={`mt-4 max-w-xl text-base leading-relaxed sm:text-lg lg:text-xl drop-shadow whitespace-pre-line ${
+        isSubtitleAuto ? "text-white/90" : ""
+      }`}
+      style={subtitleStyle}
+    >
+      {slide.subtitle}
+    </p>
+  )}
+</div>
                     {hasButton && (
                       <div className="mt-6 pt-2">
                         {isExternal ? (
-                          <a
-                            href={slide.buttonHref!}
+                          
+                           <a href={slide.buttonHref!}
                             target="_blank"
                             rel="noopener noreferrer"
                             className={buttonClassName}
@@ -202,7 +219,6 @@ const buttonClassName = `relative z-10 inline-flex items-center justify-center r
         })}
       </div>
 
-      {/* Controles del Hero Carrusel */}
       {slides.length > 1 && (
         <>
           <button

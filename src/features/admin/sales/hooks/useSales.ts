@@ -18,22 +18,29 @@ export function useSales() {
     refresh();
   }, [refresh]);
 
-  const createSale = async (payload: {
-    customerId: string | null;
-    items: { productId: string; quantity: number; unitPrice: number }[];
-    paymentMethod: string;
-    paymentStatus: string;
-    notes?: string;
-  }) => {
-    const res = await fetch("/api/sales", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw new Error((await res.json()).error);
-    await refresh();
-  };
-
+const createSale = async (payload: {
+  customerId: string | null;
+  items: {
+    productId: string;
+    quantity: number;
+    unitPrice: number;
+    discountType?: "amount" | "percentage" | null;
+    discountValue?: number;
+  }[];
+  paymentMethod: string;
+  paymentStatus: string;
+  notes?: string;
+  discountType?: "amount" | "percentage" | null;
+  discountValue?: number;
+}) => {
+  const res = await fetch("/api/sales", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error((await res.json()).error);
+  await refresh();
+};
   const cancelSale = async (id: string) => {
     const res = await fetch(`/api/sales/${id}`, { method: "DELETE" });
     if (!res.ok) throw new Error((await res.json()).error);

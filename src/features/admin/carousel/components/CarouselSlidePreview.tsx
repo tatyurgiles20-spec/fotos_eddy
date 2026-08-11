@@ -1,7 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import type { ButtonStyle, FontFamily, TextPosition } from "@/types/carousel";
+import type { ButtonStyle, FontFamily, OverlayLayer, OverlayPosition, OverlayWidth, TextPosition } from "@/types/carousel";
+import {
+  getSlideBackgroundColor,
+  getTextStyle,
+  getUnderlineColor,
+  getTextPanelStyle,
+  getOverlayContainerStyle,
+  getOverlayZIndex,
+  getTitleZIndex,
+} from "@/lib/carousel-style";
 
 const BUTTON_STYLES: Record<ButtonStyle, string> = {
   primary: "bg-white text-black hover:bg-white/90",
@@ -16,8 +25,6 @@ const FONT_VARS: Record<Exclude<FontFamily, "auto">, string> = {
   accent: "var(--font-caveat)",
 };
 
-// left/right/center controlan la alineación horizontal; bottom/middle
-// controlan si el bloque de texto va pegado abajo o centrado verticalmente.
 const POSITION_CLASSES: Record<TextPosition, string> = {
   "bottom-left": "items-start text-left justify-end",
   "bottom-center": "items-center text-center justify-end",
@@ -37,8 +44,16 @@ type Props = {
   fontFamily: FontFamily;
   titleColor: string | null;
   subtitleColor: string | null;
+  titleGradient: string | null;
+  subtitleGradient: string | null;
+  backgroundColor: string | null;
+  textBackgroundColor: string | null;
   textPosition: TextPosition;
   showUnderline: boolean;
+  overlayImageUrl: string | null;
+  overlayPosition: OverlayPosition;
+  overlayLayer: OverlayLayer;
+  overlayWidth: OverlayWidth;
 };
 
 export function CarouselSlidePreview({
@@ -51,15 +66,32 @@ export function CarouselSlidePreview({
   fontFamily,
   titleColor,
   subtitleColor,
+  titleGradient,
+  subtitleGradient,
+  backgroundColor,
+  textBackgroundColor,
   textPosition,
   showUnderline,
+  overlayImageUrl,
+  overlayPosition,
+  overlayLayer,
+  overlayWidth,
 }: Props) {
   const fontStyle = fontFamily !== "auto" ? { fontFamily: FONT_VARS[fontFamily] } : undefined;
+  const titleStyle = getTextStyle(titleColor, titleGradient, fontStyle);
+  const subtitleStyle = getTextStyle(subtitleColor, subtitleGradient, fontStyle);
+  const underlineColor = getUnderlineColor(titleColor, titleGradient);
+  const isTitleAuto = !titleColor && !titleGradient;
+  const isSubtitleAuto = !subtitleColor && !subtitleGradient;
+  const textPanelStyle = getTextPanelStyle(textBackgroundColor);
 
   return (
     <div>
       <p className="mb-2 text-sm font-medium text-muted-foreground">Vista previa</p>
-      <div className="relative h-[180px] w-full overflow-hidden rounded-2xl border border-border bg-card shadow-elevated sm:h-[240px]">
+      <div
+        className="relative h-[180px] w-full overflow-hidden rounded-2xl border border-border shadow-elevated sm:h-[240px]"
+        style={{ backgroundColor: imageUrl ? getSlideBackgroundColor(backgroundColor) : undefined }}
+      >
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -69,7 +101,7 @@ export function CarouselSlidePreview({
             className="object-cover"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">
+          <div className="flex h-full w-full items-center justify-center bg-card text-sm text-muted-foreground">
             Elige una imagen para ver la vista previa
           </div>
         )}
@@ -78,30 +110,37 @@ export function CarouselSlidePreview({
 
         {imageUrl && (title || subtitle || buttonText) && (
           <div className={`absolute inset-0 flex flex-col gap-2 p-4 ${POSITION_CLASSES[textPosition]}`}>
-            {title && (
-              <div>
-                <h2
-                  className={`text-lg font-bold ${titleColor ? "" : "text-white"}`}
-                  style={{ ...fontStyle, color: titleColor ?? undefined }}
+            <div className={textPanelStyle ? "rounded-lg px-2.5 py-2" : undefined} style={textPanelStyle}>
+              {overlayImageUrl && (
+                <div
+                  style={{
+                    ...getOverlayContainerStyle(overlayPosition, overlayWidth),
+                    zIndex: getOverlayZIndex(overlayLayer),
+                    width: Math.min(
+                      80,
+                      overlayWidth === "large" ? 80 : overlayWidth === "medium" ? 55 : 35
+                    ), // escala reducida para la miniatura de preview
+                  }}
                 >
-                  {title}
-                </h2>
-                {showUnderline && (
-                  <div
-                    className="mt-1 h-1.5 w-16 rounded-full opacity-80"
-                    style={{ backgroundColor: titleColor ?? "currentColor", color: titleColor ?? undefined }}
-                  />
-                )}
-              </div>
-            )}
-            {subtitle && (
-              <p
-                className={`max-w-xs text-xs ${subtitleColor ? "" : "text-white/85"}`}
-                style={{ ...fontStyle, color: subtitleColor ?? undefined }}
-              >
-                {subtitle}
-              </p>
-            )}
+                  <img src={overlayImageUrl} alt="" style={{ width: "100%", height: "auto", display: "block" }} />
+                </div>
+              )}
+              {title && (
+                <div style={{ zIndex: getTitleZIndex(overlayLayer), position: "relative" }}>
+                  <h2 className={`text-lg font-bold ${isTitleAuto ? "text-white" : ""}`} style={titleStyle}>
+                    {title}
+                  </h2>
+                  {showUnderline && (
+                    <div className="mt-1 h-1.5 w-16 rounded-full opacity-80" style={{ backgroundColor: underlineColor ?? "currentColor" }} />
+                  )}
+                </div>
+              )}
+              {subtitle && (
+                <p className={`max-w-xs text-xs whitespace-pre-line ${isSubtitleAuto ? "text-white/85" : ""}`} style={subtitleStyle}>
+                  {subtitle}
+                </p>
+              )}
+            </div>
             {buttonText && (
               <span
                 className={`pointer-events-none inline-block rounded-full px-4 py-1.5 text-xs font-semibold shadow-sm ${BUTTON_STYLES[buttonStyle]}`}

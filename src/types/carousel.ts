@@ -7,6 +7,9 @@ export type TextPosition =
   | "middle-left"
   | "middle-center"
   | "middle-right";
+export type OverlayPosition = "overlap" | "tight" | "close" | "spaced" | "far";
+export type OverlayLayer = "front" | "back";
+export type OverlayWidth = "small" | "medium" | "large";
 
 export type CarouselSlide = {
   id: string;
@@ -20,15 +23,23 @@ export type CarouselSlide = {
   buttonHref: string | null;
   buttonStyle: ButtonStyle;
   fontFamily: FontFamily;
-  titleColor: string | null; // null = automático (hereda el tema)
-  subtitleColor: string | null; // null = automático (hereda el tema)
+  titleColor: string | null;
+  subtitleColor: string | null;
+  titleGradient: string | null;
+  subtitleGradient: string | null;
+  backgroundColor: string | null;
+  textBackgroundColor: string | null;
+  overlayImageId: string | null;
+  overlayImageUrl: string | null;
+  overlayPosition: OverlayPosition;
+  overlayLayer: OverlayLayer;
+  overlayWidth: OverlayWidth;
   textPosition: TextPosition;
   showUnderline: boolean;
   position: number;
   active: boolean;
 };
 
-// Forma que llega directo de Supabase (snake_case + join con images)
 export type CarouselSlideRow = {
   id: string;
   carousel_key: string;
@@ -42,11 +53,20 @@ export type CarouselSlideRow = {
   font_family: FontFamily | null;
   title_color: string | null;
   subtitle_color: string | null;
+  title_gradient: string | null;
+  subtitle_gradient: string | null;
+  background_color: string | null;
+  text_background_color: string | null;
+  overlay_image_id: string | null;
+  overlay_position: OverlayPosition | null;
+  overlay_layer: OverlayLayer | null;
+  overlay_width: OverlayWidth | null;
   text_position: TextPosition;
   show_underline: boolean;
   position: number;
   active: boolean;
   images: { direct_url: string } | null;
+  overlay_image: { direct_url: string } | null;
 };
 
 export function mapCarouselSlideRow(row: CarouselSlideRow): CarouselSlide {
@@ -64,6 +84,15 @@ export function mapCarouselSlideRow(row: CarouselSlideRow): CarouselSlide {
     fontFamily: row.font_family ?? "auto",
     titleColor: row.title_color ?? null,
     subtitleColor: row.subtitle_color ?? null,
+    titleGradient: row.title_gradient ?? null,
+    subtitleGradient: row.subtitle_gradient ?? null,
+    backgroundColor: row.background_color ?? null,
+    textBackgroundColor: row.text_background_color ?? null,
+    overlayImageId: row.overlay_image_id ?? null,
+    overlayImageUrl: row.overlay_image?.direct_url ?? null,
+    overlayPosition: row.overlay_position ?? "close",
+    overlayLayer: row.overlay_layer ?? "front",
+    overlayWidth: row.overlay_width ?? "medium",
     textPosition: row.text_position ?? "bottom-left",
     showUnderline: row.show_underline ?? true,
     position: row.position,

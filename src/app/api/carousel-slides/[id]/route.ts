@@ -34,6 +34,14 @@ export async function PUT(
       show_underline: body.show_underline,
       position: body.position,
       active: body.active,
+      title_gradient: body.title_gradient,
+      subtitle_gradient: body.subtitle_gradient,
+      background_color: body.background_color,
+      text_background_color: body.text_background_color,
+      overlay_image_id: body.overlay_image_id,
+      overlay_position: body.overlay_position,
+      overlay_layer: body.overlay_layer,
+      overlay_width: body.overlay_width,
     })
     .eq("id", id)
     .select()

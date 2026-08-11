@@ -1,15 +1,18 @@
 export type PaymentMethod = "cash" | "transfer" | "card" | "credit";
 export type PaymentStatus = "paid" | "pending";
 export type SaleStatus = "completed" | "cancelled";
+export type DiscountType = "amount" | "percentage";
 
 export type Sale = {
   id: string;
   sale_number: number;
   customer_id: string | null;
-  customer_name: string | null; // aplanado por la API (ver nota en el route)
+  customer_name: string | null;
   status: SaleStatus;
   subtotal: number;
   discount_total: number;
+  discount_type: DiscountType | null;
+  discount_value: number;
   tax_total: number;
   total: number;
   payment_method: PaymentMethod;
@@ -30,6 +33,8 @@ export type SaleItem = {
   unit_price: number;
   unit_cost: number | null;
   subtotal: number;
+  discount_type: DiscountType | null;
+  discount_value: number;
 };
 
 export type SaleCustomerInfo = {

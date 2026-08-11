@@ -34,7 +34,7 @@ export async function POST(request: Request) {
   if (!authorized) return NextResponse.json({ error: "No autorizado" }, { status: 403 });
 
   const body = await request.json();
-  const { customerId, items, paymentMethod, paymentStatus, notes } = body;
+  const { customerId, items, paymentMethod, paymentStatus, notes, discountType, discountValue } = body;
 
   if (!Array.isArray(items) || items.length === 0) {
     return NextResponse.json({ error: "Agrega al menos un producto a la venta" }, { status: 400 });
@@ -56,15 +56,25 @@ export async function POST(request: Request) {
 
   const { data: saleId, error } = await supabase.rpc("create_sale", {
     p_customer_id: customerId ?? null,
-    p_items: items.map((i: { productId: string; quantity: number; unitPrice?: number }) => ({
+    p_items: items.map((i: {
+      productId: string;
+      quantity: number;
+      unitPrice?: number;
+      discountType?: string | null;
+      discountValue?: number;
+    }) => ({
       product_id: i.productId,
       quantity: i.quantity,
       unit_price: i.unitPrice,
+      discount_type: i.discountType ?? null,
+      discount_value: i.discountValue ?? 0,
     })),
     p_payment_method: paymentMethod ?? "cash",
     p_payment_status: paymentStatus ?? "paid",
     p_notes: notes ?? null,
     p_created_by: admin?.id ?? null,
+    p_discount_type: discountType ?? null,
+    p_discount_value: discountValue ?? 0,
   });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

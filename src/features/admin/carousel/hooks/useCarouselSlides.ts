@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { ButtonStyle, CarouselSlide, FontFamily, TextPosition } from "@/types/carousel";
+import type { ButtonStyle, CarouselSlide, FontFamily, OverlayLayer, OverlayPosition, OverlayWidth, TextPosition } from "@/types/carousel";
 
 export type CarouselSlideInput = {
   image_id: string;
@@ -14,12 +14,19 @@ export type CarouselSlideInput = {
   font_family?: FontFamily | null;
   title_color?: string | null;
   subtitle_color?: string | null;
+  title_gradient?: string | null;
+  subtitle_gradient?: string | null;
+  background_color?: string | null;
+  text_background_color?: string | null;
   text_position?: TextPosition;
   show_underline?: boolean;
   position?: number;
   active?: boolean;
+  overlay_image_id?: string | null;
+  overlay_position?: OverlayPosition;
+  overlay_layer?: OverlayLayer;
+  overlay_width?: OverlayWidth;
 };
-
 export function useCarouselSlides(carouselKey: string) {
   const [slides, setSlides] = useState<CarouselSlide[]>([]);
   const [loading, setLoading] = useState(false);
