@@ -1,12 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-// Nota: si tus otros archivos [id]/route.ts (products, images, etc.) usan
-// `{ params }: { params: Promise<{ id: string }> }` (convención de Next 15),
-// ajusta la firma de estas dos funciones igual para mantener consistencia.
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
 
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   const { authorized } = await requireAdmin();
   if (!authorized) return NextResponse.json({ error: "No autorizado" }, { status: 403 });
 
@@ -28,7 +29,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   const { data, error } = await supabase
     .from("inventory_movements")
     .update(updates)
-    .eq("id", params.id)
+    .eq("id", id)
     .select("*, products(name, sku, type)")
     .single();
 
@@ -36,12 +37,17 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   return NextResponse.json(data);
 }
 
-export async function DELETE(_request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+
   const { authorized } = await requireAdmin();
   if (!authorized) return NextResponse.json({ error: "No autorizado" }, { status: 403 });
 
   const supabase = createAdminClient();
-  const { error } = await supabase.from("inventory_movements").delete().eq("id", params.id);
+  const { error } = await supabase.from("inventory_movements").delete().eq("id", id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
