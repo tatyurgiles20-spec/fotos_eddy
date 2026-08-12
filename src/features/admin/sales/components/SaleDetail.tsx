@@ -14,7 +14,10 @@ type Props = {
   loading: boolean;
   error?: string | null;
 };
-
+function formatDiscount(type: string | null, value: number): string | null {
+  if (!type || value <= 0) return null;
+  return type === "percentage" ? `${value}%` : `$${value.toFixed(2)}`;
+}
 export function SaleDetail({ sale, loading, error }: Props) {
   if (loading) {
     return (
@@ -78,24 +81,29 @@ export function SaleDetail({ sale, loading, error }: Props) {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-border">
-        <div className="hidden grid-cols-[1fr_70px_90px_90px] gap-2 border-b border-border bg-muted/40 px-3 py-2 text-xs font-medium text-muted-foreground sm:grid">
-          <span>Producto</span>
-          <span>Cant.</span>
-          <span>Precio</span>
-          <span>Subtotal</span>
+<div className="overflow-hidden rounded-lg border border-border">
+  <div className="hidden grid-cols-[1fr_60px_80px_80px_90px] gap-2 border-b border-border bg-muted/40 px-3 py-2 text-xs font-medium text-muted-foreground sm:grid">
+    <span>Producto</span>
+    <span>Cant.</span>
+    <span>Precio</span>
+    <span>Desc.</span>
+    <span>Subtotal</span>
+  </div>
+  <div className="flex flex-col divide-y divide-border">
+    {(sale.items ?? []).map((item) => {
+      const itemDiscount = formatDiscount(item.discount_type, item.discount_value);
+      return (
+        <div key={item.id} className="grid grid-cols-2 gap-2 px-3 py-2 text-sm sm:grid-cols-[1fr_60px_80px_80px_90px]">
+          <p className="truncate">{item.product_name_snapshot}</p>
+          <span className="text-muted-foreground">x{item.quantity}</span>
+          <span className="hidden text-muted-foreground sm:block">${item.unit_price.toFixed(2)}</span>
+          <span className="hidden text-xs text-destructive sm:block">{itemDiscount ?? "—"}</span>
+          <span className="hidden font-medium sm:block">${item.subtotal.toFixed(2)}</span>
         </div>
-        <div className="flex flex-col divide-y divide-border">
-          {(sale.items ?? []).map((item) => (
-            <div key={item.id} className="grid grid-cols-2 gap-2 px-3 py-2 text-sm sm:grid-cols-[1fr_70px_90px_90px]">
-              <p className="truncate">{item.product_name_snapshot}</p>
-              <span className="text-muted-foreground">x{item.quantity}</span>
-              <span className="hidden text-muted-foreground sm:block">${item.unit_price.toFixed(2)}</span>
-              <span className="hidden font-medium sm:block">${item.subtotal.toFixed(2)}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      );
+    })}
+  </div>
+</div>
 
       {sale.notes && (
         <p className="text-xs text-muted-foreground">
@@ -103,10 +111,27 @@ export function SaleDetail({ sale, loading, error }: Props) {
         </p>
       )}
 
-      <div className="flex items-center justify-between border-t border-border pt-3">
-        <span className="text-sm font-medium text-muted-foreground">Total</span>
-        <span className="font-display text-xl font-bold">${sale.total.toFixed(2)}</span>
-      </div>
+<div className="space-y-1 border-t border-border pt-3">
+  <div className="flex items-center justify-between text-sm text-muted-foreground">
+    <span>Subtotal</span>
+    <span>${sale.subtotal.toFixed(2)}</span>
+  </div>
+  {sale.discount_total > 0 && (
+    <div className="flex items-center justify-between text-sm text-destructive">
+      <span>
+        Descuento
+        {formatDiscount(sale.discount_type, sale.discount_value) && sale.discount_type
+          ? ` (venta: ${formatDiscount(sale.discount_type, sale.discount_value)})`
+          : ""}
+      </span>
+      <span>-${sale.discount_total.toFixed(2)}</span>
+    </div>
+  )}
+  <div className="flex items-center justify-between pt-1">
+    <span className="text-sm font-medium text-muted-foreground">Total</span>
+    <span className="font-display text-xl font-bold">${sale.total.toFixed(2)}</span>
+  </div>
+</div>
     </div>
   );
 }

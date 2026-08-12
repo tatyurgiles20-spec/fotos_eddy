@@ -42,17 +42,25 @@ export function SaleList({ sales, onView, onCancel }: Props) {
 
             <div className="min-w-0">
               <p className="truncate text-sm">{s.customer_name ?? "Consumidor Final"}</p>
-              <p className="mt-0.5 text-xs text-muted-foreground sm:hidden">
-                {new Date(s.created_at).toLocaleDateString("es-EC", { day: "2-digit", month: "short" })} · $
-                {s.total.toFixed(2)}
-              </p>
+<p className="mt-0.5 text-xs text-muted-foreground sm:hidden">
+  {new Date(s.created_at).toLocaleDateString("es-EC", { day: "2-digit", month: "short" })} · $
+  {s.total.toFixed(2)}
+  {s.discount_total > 0 && <span className="text-warning"> (desc. ${s.discount_total.toFixed(2)})</span>}
+</p>
             </div>
 
             <span className="hidden text-sm text-muted-foreground sm:block">
               {s.item_count} {s.item_count === 1 ? "ítem" : "ítems"}
             </span>
 
-            <span className="hidden text-sm font-semibold sm:block">${s.total.toFixed(2)}</span>
+            <span className="hidden text-sm font-semibold sm:flex sm:items-center sm:gap-1">
+  ${s.total.toFixed(2)}
+  {s.discount_total > 0 && (
+    <span className="rounded-full bg-warning/10 px-1.5 py-0.5 text-[10px] font-medium text-warning">
+      -${s.discount_total.toFixed(2)}
+    </span>
+  )}
+</span>
 
             <span className="hidden text-sm text-muted-foreground sm:block">
               {PAYMENT_LABEL[s.payment_method] ?? s.payment_method}

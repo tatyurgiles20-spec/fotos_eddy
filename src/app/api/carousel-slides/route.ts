@@ -15,9 +15,9 @@ export async function GET(request: NextRequest) {
 
   const { data, error } = await supabase
     .from("carousel_slides")
-.select(
-  "id, carousel_key, image_id, alt_text, title, subtitle, button_text, button_href, button_style, font_family, title_color, subtitle_color, title_gradient, subtitle_gradient, background_color, text_background_color, overlay_image_id, overlay_position, overlay_layer, overlay_width, text_position, show_underline, position, active, images!carousel_slides_image_id_fkey ( id, direct_url ), overlay_image:images!carousel_slides_overlay_image_id_fkey ( direct_url )"
-)
+    .select(
+      "id, carousel_key, image_id, alt_text, title, subtitle, button_text, button_href, button_style, font_family, title_color, subtitle_color, title_gradient, subtitle_gradient, background_color, text_background_color,background_gradient, button_gradient, overlay_image_id, overlay_position, overlay_layer, overlay_width, text_position, show_underline, position, active, images!carousel_slides_image_id_fkey ( id, direct_url ), overlay_image:images!carousel_slides_overlay_image_id_fkey ( direct_url )"
+    )
     .eq("carousel_key", carouselKey)
     .order("position", { ascending: true });
 
@@ -73,6 +73,8 @@ export async function POST(request: NextRequest) {
       overlay_position: body.overlay_position ?? "close",
       overlay_layer: body.overlay_layer ?? "front",
       overlay_width: body.overlay_width ?? "medium",
+      background_gradient: body.background_gradient ?? null,
+      button_gradient: body.button_gradient ?? null,
     })
     .select()
     .single();

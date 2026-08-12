@@ -42,6 +42,8 @@ export async function PUT(
       overlay_position: body.overlay_position,
       overlay_layer: body.overlay_layer,
       overlay_width: body.overlay_width,
+      background_gradient: body.background_gradient,
+      button_gradient: body.button_gradient,
     })
     .eq("id", id)
     .select()

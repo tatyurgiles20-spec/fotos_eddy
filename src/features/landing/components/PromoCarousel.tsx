@@ -1,14 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { CarouselSlide, FontFamily, TextPosition } from "@/types/carousel";
 import {
   getSlideBackgroundColor,
+  getSlideBackgroundStyle,
   getTextStyle,
   getUnderlineColor,
   getTextPanelStyle,
+  getButtonGradientStyle,
   getOverlayContainerStyle,
   getOverlayZIndex,
   getTitleZIndex,
@@ -28,6 +30,8 @@ const BUTTON_STYLES: Record<CarouselSlide["buttonStyle"], string> = {
     "border-2 border-white/80 text-white backdrop-blur-md hover:bg-white hover:text-foreground hover:border-white hover:-translate-y-0.5 active:translate-y-0 shadow-md transition-all duration-300",
   ghost:
     "bg-white/10 text-white border border-white/15 backdrop-blur-md hover:bg-white/20 hover:border-white/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300",
+  gradient:
+    "text-white shadow-colored hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300",
 };
 
 const FONT_VARS: Record<Exclude<FontFamily, "auto">, string> = {
@@ -58,6 +62,9 @@ export function PromoCarousel({ slides, autoPlayInterval = 5000 }: PromoCarousel
   const [index, setIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
+  const touchStartX = useRef<number | null>(null);
+  const touchDeltaX = useRef(0);
+
   const goTo = useCallback(
     (i: number) => setIndex((i + slides.length) % slides.length),
     [slides.length]
@@ -71,6 +78,29 @@ export function PromoCarousel({ slides, autoPlayInterval = 5000 }: PromoCarousel
     return () => clearInterval(timer);
   }, [isPaused, slides.length, autoPlayInterval]);
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchDeltaX.current = 0;
+    setIsPaused(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    touchDeltaX.current = e.touches[0].clientX - touchStartX.current;
+  };
+
+  const handleTouchEnd = () => {
+    const SWIPE_THRESHOLD = 50; // px mínimos para contar como swipe intencional
+    if (touchDeltaX.current > SWIPE_THRESHOLD) {
+      goTo(index - 1);
+    } else if (touchDeltaX.current < -SWIPE_THRESHOLD) {
+      goTo(index + 1);
+    }
+    touchStartX.current = null;
+    touchDeltaX.current = 0;
+    setIsPaused(false);
+  };
+
   if (slides.length === 0) return null;
 
   return (
@@ -78,9 +108,11 @@ export function PromoCarousel({ slides, autoPlayInterval = 5000 }: PromoCarousel
       className="group relative w-full overflow-hidden bg-black"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      onTouchStart={() => setIsPaused(true)}
-      onTouchEnd={() => setIsPaused(false)}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
+      {/* Altura de Hero: 85vh en escritorio (mínimo 600px), 520px en móvil */}
       <div className="relative h-[520px] min-h-[520px] w-full sm:h-[650px] lg:h-[85vh] lg:min-h-[620px]">
         {slides.map((slide, i) => {
           const hasButton = Boolean(slide.buttonText?.trim() && slide.buttonHref?.trim());
@@ -88,6 +120,8 @@ export function PromoCarousel({ slides, autoPlayInterval = 5000 }: PromoCarousel
           const buttonClassName = `relative z-10 inline-flex items-center justify-center rounded-full px-8 py-3.5 text-base font-bold transition-all duration-300 ${
             BUTTON_STYLES[slide.buttonStyle] ?? BUTTON_STYLES.primary
           }`;
+          const buttonGradientStyle =
+            slide.buttonStyle === "gradient" ? getButtonGradientStyle(slide.buttonGradient) : undefined;
           const fontStyle =
             slide.fontFamily !== "auto" ? { fontFamily: FONT_VARS[slide.fontFamily] } : undefined;
           const positionClass = POSITION_CLASSES[slide.textPosition] ?? POSITION_CLASSES["bottom-left"];
@@ -105,18 +139,20 @@ export function PromoCarousel({ slides, autoPlayInterval = 5000 }: PromoCarousel
           const isTitleAuto = !slide.titleColor && !slide.titleGradient;
           const isSubtitleAuto = !slide.subtitleColor && !slide.subtitleGradient;
           const textPanelStyle = getTextPanelStyle(slide.textBackgroundColor);
-const overlayContainerStyle = slide.overlayImageUrl
-  ? getOverlayContainerStyle(slide.overlayPosition, slide.overlayWidth)
-  : undefined;
-const overlayZ = getOverlayZIndex(slide.overlayLayer);
-const titleZ = getTitleZIndex(slide.overlayLayer);
+
+          const overlayContainerStyle = slide.overlayImageUrl
+            ? getOverlayContainerStyle(slide.overlayPosition, slide.overlayWidth)
+            : undefined;
+          const overlayZ = getOverlayZIndex(slide.overlayLayer);
+          const titleZ = getTitleZIndex(slide.overlayLayer);
+
           return (
             <div
               key={slide.id}
               className={`absolute inset-0 transition-all duration-1000 ease-out ${
                 i === index ? "opacity-100 scale-100 z-10" : "pointer-events-none opacity-0 scale-105 z-0"
               }`}
-              style={{ backgroundColor: getSlideBackgroundColor(slide.backgroundColor) }}
+              style={getSlideBackgroundStyle(slide.backgroundColor, slide.backgroundGradient)}
             >
               {/* Imagen principal */}
               <Image
@@ -128,84 +164,86 @@ const titleZ = getTitleZIndex(slide.overlayLayer);
                 priority={i === 0}
               />
 
-              {/* Degradado de contraste general */}
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20 md:bg-gradient-to-r md:from-black/85 md:via-black/40 md:to-transparent" />
-
+ 
               {/* Contenido del Slide */}
               {(slide.title || slide.subtitle || hasButton) && (
-                <div className="relative z-10 mx-auto h-full max-w-7xl px-6 sm:px-10 lg:px-12">
+                <div className="relative z-10 h-full w-full px-6 sm:px-10 lg:px-16 xl:pl-20">
                   <div className={`flex h-full flex-col ${paddingClass} ${positionClass}`}>
- 
-                    {/* Panel de texto: si hay textBackgroundColor, envuelve título+subtítulo */}
-<div
-  className={textPanelStyle ? "rounded-xl px-4 py-3 sm:px-5 sm:py-4" : undefined}
-  style={textPanelStyle}
->
-  {slide.overlayImageUrl && (
-    <div style={{ ...overlayContainerStyle, zIndex: overlayZ }}>
-      <img
-        src={slide.overlayImageUrl}
-        alt=""
-        style={{ width: "100%", height: "auto", display: "block" }}
-      />
-    </div>
-  )}
+                    {/* Panel de texto: si hay textBackgroundColor, envuelve overlay+título+subtítulo */}
+                    <div
+                      className={textPanelStyle ? "rounded-xl px-4 py-3 sm:px-5 sm:py-4" : undefined}
+                      style={textPanelStyle}
+                    >
+                      {slide.overlayImageUrl && (
+                        <div style={{ ...overlayContainerStyle, zIndex: overlayZ }}>
+                          <img
+                            src={slide.overlayImageUrl}
+                            alt=""
+                            style={{ width: "100%", height: "auto", display: "block" }}
+                          />
+                        </div>
+                      )}
 
-  {slide.title && (
-    <div className="relative max-w-3xl" style={{ zIndex: titleZ }}>
-      <h1
-        className={`text-3xl font-extrabold leading-[1.15] sm:text-5xl lg:text-6xl drop-shadow-lg ${
-          isTitleAuto ? "text-white" : ""
-        }`}
-        style={titleStyle}
-      >
-        {slide.title}
-      </h1>
+                      {slide.title && (
+                        <div className="relative max-w-3xl" style={{ zIndex: titleZ }}>
+                          <h1
+                            className={`text-3xl font-extrabold leading-[1.15] sm:text-5xl lg:text-6xl drop-shadow-lg ${
+                              isTitleAuto ? "text-white" : ""
+                            }`}
+                            style={titleStyle}
+                          >
+                            {slide.title}
+                          </h1>
 
-      {slide.showUnderline && (
-        <div className={`mt-2 h-3 w-36 sm:w-48 lg:w-64 ${underlineAlign}`} style={{ color: underlineColor }}>
-          <svg
-            viewBox="0 0 250 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className={`h-full w-full ${underlineColor ? "" : "text-primary"}`}
-          >
-            <path
-              d="M3 14C50 4 150 3 247 11M15 17C80 9 170 8 230 15"
-              stroke="currentColor"
-              strokeWidth="5"
-              strokeLinecap="round"
-            />
-          </svg>
-        </div>
-      )}
-    </div>
-  )}
+                          {slide.showUnderline && (
+                            <div
+                              className={`mt-2 h-3 w-36 sm:w-48 lg:w-64 ${underlineAlign}`}
+                              style={{ color: underlineColor }}
+                            >
+                              <svg
+                                viewBox="0 0 250 20"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                className={`h-full w-full ${underlineColor ? "" : "text-primary"}`}
+                              >
+                                <path
+                                  d="M3 14C50 4 150 3 247 11M15 17C80 9 170 8 230 15"
+                                  stroke="currentColor"
+                                  strokeWidth="5"
+                                  strokeLinecap="round"
+                                />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+                      )}
 
-  {slide.subtitle && (
-    <p
-      className={`mt-4 max-w-xl text-base leading-relaxed sm:text-lg lg:text-xl drop-shadow whitespace-pre-line ${
-        isSubtitleAuto ? "text-white/90" : ""
-      }`}
-      style={subtitleStyle}
-    >
-      {slide.subtitle}
-    </p>
-  )}
-</div>
+                      {slide.subtitle && (
+                        <p
+                          className={`mt-4 max-w-xl text-base leading-relaxed sm:text-lg lg:text-xl drop-shadow whitespace-pre-line ${
+                            isSubtitleAuto ? "text-white/90" : ""
+                          }`}
+                          style={subtitleStyle}
+                        >
+                          {slide.subtitle}
+                        </p>
+                      )}
+                    </div>
+
                     {hasButton && (
                       <div className="mt-6 pt-2">
                         {isExternal ? (
-                          
-                           <a href={slide.buttonHref!}
+                          <a
+                            href={slide.buttonHref!}
                             target="_blank"
                             rel="noopener noreferrer"
                             className={buttonClassName}
+                            style={buttonGradientStyle}
                           >
                             {slide.buttonText}
                           </a>
                         ) : (
-                          <Link href={slide.buttonHref!} className={buttonClassName}>
+                          <Link href={slide.buttonHref!} className={buttonClassName} style={buttonGradientStyle}>
                             {slide.buttonText}
                           </Link>
                         )}
@@ -219,29 +257,30 @@ const titleZ = getTitleZIndex(slide.overlayLayer);
         })}
       </div>
 
+      {/* Controles del Hero Carrusel */}
       {slides.length > 1 && (
         <>
-          <button
-            type="button"
-            onClick={() => goTo(index - 1)}
-            aria-label="Anterior"
-            className="absolute left-4 top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white opacity-0 backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-black/70 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto sm:left-8"
-          >
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
+<button
+  type="button"
+  onClick={() => goTo(index - 1)}
+  aria-label="Anterior"
+  className="absolute left-4 top-1/2 z-30 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white opacity-0 backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-black/70 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto sm:flex sm:left-8"
+>
+  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+  </svg>
+</button>
 
-          <button
-            type="button"
-            onClick={() => goTo(index + 1)}
-            aria-label="Siguiente"
-            className="absolute right-4 top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white opacity-0 backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-black/70 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto sm:right-8"
-          >
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+<button
+  type="button"
+  onClick={() => goTo(index + 1)}
+  aria-label="Siguiente"
+  className="absolute right-4 top-1/2 z-30 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white opacity-0 backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-black/70 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto sm:flex sm:right-8"
+>
+  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+  </svg>
+</button>
 
           <div className="absolute bottom-6 right-6 z-30 flex items-center gap-2.5 rounded-full border border-white/15 bg-black/50 px-4 py-2 backdrop-blur-md sm:bottom-10 sm:right-12">
             {slides.map((slide, i) => (

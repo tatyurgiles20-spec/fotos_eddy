@@ -86,3 +86,19 @@ export function getOverlayZIndex(layer: OverlayLayer | null): number {
 export function getTitleZIndex(layer: OverlayLayer | null): number {
   return layer === "back" ? 1 : 1;
 }
+export function getSlideBackgroundStyle(
+  backgroundColor: string | null,
+  backgroundGradient: string | null
+): CSSProperties {
+  const colors = parseGradientColors(backgroundGradient);
+  if (colors.length >= 2) {
+    return { backgroundImage: `linear-gradient(135deg, ${colors.join(", ")})` };
+  }
+  return { backgroundColor: getSlideBackgroundColor(backgroundColor) };
+}
+
+export function getButtonGradientStyle(buttonGradient: string | null): CSSProperties | undefined {
+  const colors = parseGradientColors(buttonGradient);
+  if (colors.length < 2) return undefined;
+  return { backgroundImage: `linear-gradient(135deg, ${colors.join(", ")})` };
+}

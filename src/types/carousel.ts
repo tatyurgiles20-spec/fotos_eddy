@@ -1,4 +1,4 @@
-export type ButtonStyle = "primary" | "secondary" | "outline" | "ghost";
+export type ButtonStyle = "primary" | "secondary" | "outline" | "ghost" | "gradient";
 export type FontFamily = "auto" | "display" | "body" | "accent";
 export type TextPosition =
   | "bottom-left"
@@ -38,6 +38,8 @@ export type CarouselSlide = {
   showUnderline: boolean;
   position: number;
   active: boolean;
+  backgroundGradient: string | null;
+  buttonGradient: string | null;
 };
 
 export type CarouselSlideRow = {
@@ -67,6 +69,8 @@ export type CarouselSlideRow = {
   active: boolean;
   images: { direct_url: string } | null;
   overlay_image: { direct_url: string } | null;
+    background_gradient: string | null;
+  button_gradient: string | null;
 };
 
 export function mapCarouselSlideRow(row: CarouselSlideRow): CarouselSlide {
@@ -97,5 +101,7 @@ export function mapCarouselSlideRow(row: CarouselSlideRow): CarouselSlide {
     showUnderline: row.show_underline ?? true,
     position: row.position,
     active: row.active,
+        backgroundGradient: row.background_gradient ?? null,
+    buttonGradient: row.button_gradient ?? null,
   };
 }

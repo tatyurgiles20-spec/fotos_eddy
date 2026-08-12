@@ -10,6 +10,8 @@ import {
   getOverlayContainerStyle,
   getOverlayZIndex,
   getTitleZIndex,
+  getSlideBackgroundStyle,
+  getButtonGradientStyle,
 } from "@/lib/carousel-style";
 
 const BUTTON_STYLES: Record<ButtonStyle, string> = {
@@ -17,6 +19,7 @@ const BUTTON_STYLES: Record<ButtonStyle, string> = {
   secondary: "bg-black/40 text-white border border-white/70 backdrop-blur-sm hover:bg-black/55",
   outline: "border border-white text-white hover:bg-white/10",
   ghost: "text-white underline underline-offset-4",
+  gradient: "text-white",
 };
 
 const FONT_VARS: Record<Exclude<FontFamily, "auto">, string> = {
@@ -54,6 +57,8 @@ type Props = {
   overlayPosition: OverlayPosition;
   overlayLayer: OverlayLayer;
   overlayWidth: OverlayWidth;
+  backgroundGradient: string | null;
+  buttonGradient: string | null;
 };
 
 export function CarouselSlidePreview({
@@ -69,6 +74,7 @@ export function CarouselSlidePreview({
   titleGradient,
   subtitleGradient,
   backgroundColor,
+  backgroundGradient,
   textBackgroundColor,
   textPosition,
   showUnderline,
@@ -76,6 +82,7 @@ export function CarouselSlidePreview({
   overlayPosition,
   overlayLayer,
   overlayWidth,
+  buttonGradient,
 }: Props) {
   const fontStyle = fontFamily !== "auto" ? { fontFamily: FONT_VARS[fontFamily] } : undefined;
   const titleStyle = getTextStyle(titleColor, titleGradient, fontStyle);
@@ -88,9 +95,9 @@ export function CarouselSlidePreview({
   return (
     <div>
       <p className="mb-2 text-sm font-medium text-muted-foreground">Vista previa</p>
-      <div
+<div
         className="relative h-[180px] w-full overflow-hidden rounded-2xl border border-border shadow-elevated sm:h-[240px]"
-        style={{ backgroundColor: imageUrl ? getSlideBackgroundColor(backgroundColor) : undefined }}
+        style={imageUrl ? getSlideBackgroundStyle(backgroundColor, backgroundGradient) : undefined}
       >
         {imageUrl ? (
           <Image
@@ -141,9 +148,10 @@ export function CarouselSlidePreview({
                 </p>
               )}
             </div>
-            {buttonText && (
+{buttonText && (
               <span
                 className={`pointer-events-none inline-block rounded-full px-4 py-1.5 text-xs font-semibold shadow-sm ${BUTTON_STYLES[buttonStyle]}`}
+                style={buttonStyle === "gradient" ? getButtonGradientStyle(buttonGradient) : undefined}
               >
                 {buttonText}
               </span>

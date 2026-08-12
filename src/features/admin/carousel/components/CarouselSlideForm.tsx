@@ -51,6 +51,7 @@ const BUTTON_STYLE_OPTIONS: { value: ButtonStyle; label: string }[] = [
   { value: "secondary", label: "Secundario" },
   { value: "outline", label: "Outline" },
   { value: "ghost", label: "Ghost (solo texto)" },
+  { value: "gradient", label: "Degradado" },
 ];
 
 const FONT_OPTIONS: { value: FontFamily; label: string }[] = [
@@ -99,6 +100,8 @@ const EMPTY_FORM = {
   overlayPosition: "close" as OverlayPosition,
   overlayLayer: "front" as OverlayLayer,
   overlayWidth: "medium" as OverlayWidth,
+    backgroundGradient: null as string | null,
+  buttonGradient: null as string | null,
 };
 
 const DEFAULT_PICKED_COLOR = "#ffffff";
@@ -135,6 +138,8 @@ useEffect(() => {
       overlayPosition: editingSlide.overlayPosition,
       overlayLayer: editingSlide.overlayLayer,
       overlayWidth: editingSlide.overlayWidth,
+      backgroundGradient: editingSlide.backgroundGradient,
+        buttonGradient: editingSlide.buttonGradient,
     });
   } else {
     setForm(EMPTY_FORM);
@@ -166,6 +171,8 @@ const input: CarouselSlideInput = {
   overlay_width: form.overlayWidth,
   text_position: form.textPosition,
   show_underline: form.showUnderline,
+  background_gradient: form.backgroundGradient,
+        button_gradient: form.buttonGradient,
 };
 
       if (editingSlide) {
@@ -209,6 +216,8 @@ const input: CarouselSlideInput = {
   overlayPosition={form.overlayPosition}
   overlayLayer={form.overlayLayer}
   overlayWidth={form.overlayWidth}
+  backgroundGradient={form.backgroundGradient}
+          buttonGradient={form.buttonGradient}
 />
       </div>
 
@@ -412,32 +421,66 @@ const input: CarouselSlideInput = {
 
       {/* Fondo del slide y panel detrás del texto */}
       <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div className="rounded-lg border border-border bg-background px-3 py-2">
-          <div className="flex items-center mb-1">
-            <span className="text-xs font-medium text-muted-foreground">Fondo del slide</span>
-            <InfoTooltip text="Se ve detrás de la imagen. Útil si tu imagen tiene fondo transparente (por defecto es negro)." />
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="flex items-center gap-1.5 text-xs">
-              <input
-                type="checkbox"
-                checked={form.backgroundColor === null}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, backgroundColor: e.target.checked ? null : DEFAULT_BG_COLOR }))
-                }
-              />
-              Negro (por defecto)
-            </label>
-            {form.backgroundColor !== null && (
-              <input
-                type="color"
-                value={form.backgroundColor}
-                onChange={(e) => setForm((f) => ({ ...f, backgroundColor: e.target.value }))}
-                className="h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
-              />
-            )}
-          </div>
-        </div>
+<div className="rounded-lg border border-border bg-background px-3 py-2">
+  <div className="flex items-center mb-1">
+    <span className="text-xs font-medium text-muted-foreground">Fondo del slide</span>
+    <InfoTooltip text="Se ve detrás de la imagen. Útil si tu imagen tiene fondo transparente." />
+  </div>
+  <select
+    value={form.backgroundGradient ? "gradient" : form.backgroundColor ? "solid" : "auto"}
+    onChange={(e) => {
+      const mode = e.target.value;
+      if (mode === "auto") {
+        setForm((f) => ({ ...f, backgroundColor: null, backgroundGradient: null }));
+      } else if (mode === "solid") {
+        setForm((f) => ({ ...f, backgroundColor: DEFAULT_BG_COLOR, backgroundGradient: null }));
+      } else {
+        setForm((f) => ({ ...f, backgroundGradient: DEFAULT_GRADIENT, backgroundColor: null }));
+      }
+    }}
+    className="w-full rounded-lg border border-border bg-background px-2 py-1 text-xs"
+  >
+    <option value="auto">Negro (por defecto)</option>
+    <option value="solid">Color sólido</option>
+    <option value="gradient">Degradado</option>
+  </select>
+
+  {form.backgroundColor !== null && (
+    <input
+      type="color"
+      value={form.backgroundColor}
+      onChange={(e) => setForm((f) => ({ ...f, backgroundColor: e.target.value }))}
+      className="mt-2 h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
+    />
+  )}
+
+  {form.backgroundGradient !== null && (
+    <div className="mt-2 flex items-center gap-1.5">
+      <input
+        type="color"
+        value={form.backgroundGradient.split(",")[0]?.trim() || "#ff6b6b"}
+        onChange={(e) =>
+          setForm((f) => {
+            const to = f.backgroundGradient?.split(",")[1]?.trim() || "#4ecdc4";
+            return { ...f, backgroundGradient: `${e.target.value}, ${to}` };
+          })
+        }
+        className="h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
+      />
+      <input
+        type="color"
+        value={form.backgroundGradient.split(",")[1]?.trim() || "#4ecdc4"}
+        onChange={(e) =>
+          setForm((f) => {
+            const from = f.backgroundGradient?.split(",")[0]?.trim() || "#ff6b6b";
+            return { ...f, backgroundGradient: `${from}, ${e.target.value}` };
+          })
+        }
+        className="h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
+      />
+    </div>
+  )}
+</div>
 
         <div className="rounded-lg border border-border bg-background px-3 py-2">
           <div className="flex items-center mb-1">
@@ -609,17 +652,45 @@ const input: CarouselSlideInput = {
             <label className="text-xs font-medium text-muted-foreground">Estilo visual del botón</label>
             <InfoTooltip text="Cambia la apariencia gráfica del botón entre relleno, contorno o plano." />
           </div>
-          <select
-            value={form.buttonStyle}
-            onChange={(e) => setForm((f) => ({ ...f, buttonStyle: e.target.value as ButtonStyle }))}
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
-          >
-            {BUTTON_STYLE_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+<select
+  value={form.buttonStyle}
+  onChange={(e) => setForm((f) => ({ ...f, buttonStyle: e.target.value as ButtonStyle }))}
+  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+>
+  {BUTTON_STYLE_OPTIONS.map((opt) => (
+    <option key={opt.value} value={opt.value}>
+      {opt.label}
+    </option>
+  ))}
+</select>
+
+{form.buttonStyle === "gradient" && (
+  <div className="mt-2 flex items-center gap-1.5">
+    <span className="text-xs text-muted-foreground">Colores</span>
+    <input
+      type="color"
+      value={(form.buttonGradient ?? DEFAULT_GRADIENT).split(",")[0]?.trim() || "#ff6b6b"}
+      onChange={(e) =>
+        setForm((f) => {
+          const to = (f.buttonGradient ?? DEFAULT_GRADIENT).split(",")[1]?.trim() || "#4ecdc4";
+          return { ...f, buttonGradient: `${e.target.value}, ${to}` };
+        })
+      }
+      className="h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
+    />
+    <input
+      type="color"
+      value={(form.buttonGradient ?? DEFAULT_GRADIENT).split(",")[1]?.trim() || "#4ecdc4"}
+      onChange={(e) =>
+        setForm((f) => {
+          const from = (f.buttonGradient ?? DEFAULT_GRADIENT).split(",")[0]?.trim() || "#ff6b6b";
+          return { ...f, buttonGradient: `${from}, ${e.target.value}` };
+        })
+      }
+      className="h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
+    />
+  </div>
+)}
         </div>
       </div>
 
