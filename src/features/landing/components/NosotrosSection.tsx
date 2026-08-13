@@ -2,7 +2,7 @@ export function NosotrosSection() {
   return (
     <section id="nosotros" className="mx-auto max-w-6xl px-6 py-16">
       <div className="mb-10 text-center">
-        <h3 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+        <h3 className="tag-handwritten !text-5xl sm:!text-6xl md:!text-7xl font-bold tracking-wide text-foreground">
           Nosotros
         </h3>
         <p className="mt-2 text-sm text-muted-foreground">

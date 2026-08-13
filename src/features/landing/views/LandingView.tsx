@@ -9,6 +9,9 @@ import { getCarouselSlides } from "@/features/landing/api/get-carousel-slides";
 import { getRankedItems } from "@/features/landing/api/get-ranked-items";
 import { getCategoryHighlights } from "@/features/landing/api/get-category-highlights";
 import { getRandomFrame } from "@/features/marcos/api/get-frames";
+import { ValuePropsSection } from "@/features/landing/components/ValuePropsSection";
+import { HowItWorksSection } from "@/features/landing/components/HowItWorksSection";
+import { FaqSection } from "@/features/landing/components/FaqSection";
 
 export async function LandingView() {
   const [featuredImages, promoSlides, topProducts, topServices, categoryHighlights, randomFrame] =
@@ -27,8 +30,12 @@ export async function LandingView() {
         {promoSlides.length > 0 && <PromoCarousel slides={promoSlides} />}
         <ServicesCarousel highlights={categoryHighlights} />
 
+        <ValuePropsSection/>
+
         <RankingSection title="Los más vendidos" items={topProducts} viewAllHref="/productos" />
         <RankingSection title="Servicios más solicitados" items={topServices} viewAllHref="/servicios" />
+
+        <HowItWorksSection/>
 
         <FrameTeaserSection frame={randomFrame} />
 
@@ -37,6 +44,8 @@ export async function LandingView() {
         <section id="galeria" className="scroll-mt-20 py-20">
           <FeaturedGallery images={featuredImages} />
         </section>
+
+        <FaqSection/>
       </main>
     </>
   );

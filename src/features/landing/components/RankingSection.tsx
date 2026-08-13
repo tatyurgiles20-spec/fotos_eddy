@@ -12,12 +12,23 @@ export function RankingSection({ title, items, viewAllHref }: Props) {
   if (items.length === 0) return null;
 
   return (
-    <section className="mx-auto max-w-7xl px-6 py-14">
-      <div className="mb-8 flex items-center justify-between">
-        <h3 className="font-display text-2xl font-bold tracking-tight text-foreground">{title}</h3>
-        <Link href={viewAllHref} className="text-sm font-medium text-primary hover:underline">
-          Ver todos →
-        </Link>
+   <section className="mx-auto max-w-7xl px-6 py-14">
+      {/* Encabezado centrado con enlace simétrico */}
+      <div className="mb-10 flex flex-col items-center text-center gap-2 sm:flex-row sm:justify-between sm:text-left">
+        {/* Elemento invisible para balancear el grid en pantallas grandes si se prefiere centrado perfecto */}
+        <div className="hidden sm:block sm:w-28" />
+
+        {/* Título centrado */}
+        <h3 className="tag-handwritten !text-5xl sm:!text-6xl md:!text-7xl font-bold tracking-wide text-foreground text-center">
+          {title}
+        </h3>
+
+        {/* Enlace "Ver todos" */}
+        <div className="sm:w-28 sm:text-right">
+          <Link href={viewAllHref} className="text-sm font-medium text-primary hover:underline">
+            Ver todos →
+          </Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4">

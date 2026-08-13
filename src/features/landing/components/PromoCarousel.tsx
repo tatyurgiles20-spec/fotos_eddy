@@ -113,7 +113,7 @@ export function PromoCarousel({ slides, autoPlayInterval = 5000 }: PromoCarousel
       onTouchEnd={handleTouchEnd}
     >
       {/* Altura de Hero: 85vh en escritorio (mínimo 600px), 520px en móvil */}
-      <div className="relative h-[520px] min-h-[520px] w-full sm:h-[650px] lg:h-[85vh] lg:min-h-[620px]">
+      <div className="relative h-[260px] min-h-[260px] w-full sm:h-[340px] lg:h-[45vh] lg:min-h-[320px]">
         {slides.map((slide, i) => {
           const hasButton = Boolean(slide.buttonText?.trim() && slide.buttonHref?.trim());
           const isExternal = hasButton ? !slide.buttonHref!.startsWith("/") : false;
@@ -160,7 +160,7 @@ export function PromoCarousel({ slides, autoPlayInterval = 5000 }: PromoCarousel
                 alt={slide.altText}
                 fill
                 sizes="100vw"
-                className="object-cover object-center brightness-95"
+                className="object-contain object-center brightness-95"
                 priority={i === 0}
               />
 

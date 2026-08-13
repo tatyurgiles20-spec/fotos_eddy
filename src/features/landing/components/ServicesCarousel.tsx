@@ -98,9 +98,9 @@ export function ServicesCarousel({
   if (length === 0) return null;
 
   return (
-    <section className="mx-auto max-w-7xl px-6 py-10 overflow-hidden">
-      <div className="mb-6 flex items-center justify-between">
-        <h3 className="font-display text-2xl font-bold tracking-tight text-foreground">
+    <section className="mx-auto max-w-7xl px-6 py-12">
+      <div className="mb-10 text-center">
+        <h3 className="tag-handwritten !text-5xl sm:!text-6xl md:!text-7xl font-bold tracking-wide text-foreground">
           {title}
         </h3>
       </div>
@@ -112,7 +112,7 @@ export function ServicesCarousel({
         onTouchEnd={handleTouchEnd}
         style={{ perspective: "1000px" }}
         className="relative flex h-[320px] sm:h-[380px] lg:h-[420px] w-full items-center justify-center"
-      >
+       >
         {services.map((service, index) => {
           const offset = getCircularOffset(index, currentIndex, length);
           const absOffset = Math.abs(offset);
@@ -135,7 +135,13 @@ export function ServicesCarousel({
                 transition:
                   "transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease, z-index 0.6s",
               }}
-              className="absolute aspect-[3/4] w-48 sm:w-60 lg:w-72 cursor-pointer select-none overflow-hidden rounded-2xl border border-border bg-card shadow-2xl"
+              
+              
+              className={`absolute aspect-[3/4] w-48 sm:w-60 lg:w-72 cursor-pointer select-none overflow-hidden rounded-2xl border border-border bg-card transition-all duration-500 ${
+                offset === 0
+                  ? "shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] dark:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.9)]"
+                  : "shadow-md"
+              }`}
             >
               <Image
                 src={service.imageUrl}

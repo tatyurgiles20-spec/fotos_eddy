@@ -6,12 +6,12 @@ import Link from "next/link";
 import { ThemeToggle } from "./ThemeToggle";
 
 const NAV_LINKS = [
-  { href: "#nosotros", label: "Nosotros" },
-  { href: "#servicios", label: "Servicios" },
-  { href: "#galeria", label: "Galería" },
-  { href: "#productos", label: "Productos" },
+ // { href: "#nosotros", label: "Nosotros" },
+  { href: "/servicios", label: "Servicios" },
+  { href: "/galeria", label: "Galería" },
+  { href: "/productos", label: "Productos" },
   { href: "/marcos", label: "Marcos" },
-  { href: "#contacto", label: "Contacto" },
+  { href: "/contacto", label: "Contacto" },
 ];
 
 export function Header() {
