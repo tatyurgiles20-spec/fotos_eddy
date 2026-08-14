@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export function Footer() {
@@ -5,21 +6,39 @@ export function Footer() {
     <footer className="border-t border-border bg-primary">
       <div className="mx-auto max-w-6xl px-6 py-14">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
-          {/* Marca */}
-          <div className="md:col-span-2">
-            <span className="font-display text-xl font-bold tracking-tight text-primary-foreground">
-              Nova Print
-            </span>
-            <p className="mt-3 max-w-sm text-sm leading-relaxed text-primary-foreground/70">
-              Estudio fotográfico y personalizados: capturamos tus recuerdos y los convertimos en arte único, listo para llevar contigo.
-            </p>
-            <span className="tag-handwritten mt-4 inline-block text-primary-foreground!">
-              Hecho con cariño
-            </span>
+          {/* Marca con contenido alineado a la derecha del logo */}
+          <div className="flex items-start gap-6 md:col-span-2">
+            <Link href="/" className="shrink-0 transition-transform duration-300 hover:scale-105">
+              <Image
+                src="/logo-nova-print-contorno.png" // Reemplaza con la ruta de tu logo
+                alt="Nova Print Logo"
+                width={160}
+                height={160}
+                className="h-28 sm:h-36 w-auto object-contain"
+                priority
+              />
+            </Link>
+
+            <div className="flex flex-col items-start">
+              <Link href="/">
+                <span className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-primary-foreground">
+                  Nova Print
+                </span>
+              </Link>
+
+              <p className="mt-2 max-w-sm text-sm leading-relaxed text-primary-foreground/70">
+                Estudio fotográfico y personalizados: Capturamos tus momentos y recuerdos para convertirlos
+                en arte personal y único, listo para llevar contigo.
+              </p>
+
+              <span className="tag-handwritten mt-3 inline-block text-primary-foreground!">
+                Hecho con cariño
+              </span>
+            </div>
           </div>
 
-          {/* Enlaces */}
-          <div>
+         {/* Enlaces (Desplazados hacia la derecha con pl-4 o md:pl-8) */}
+          <div className="flex flex-col items-start text-left pl-2 md:pl-16 lg:pl-24">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-primary-foreground">
               Explora
             </h3>
@@ -36,8 +55,8 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Contacto */}
-          <div>
+          {/* Contacto (Desplazados hacia la derecha con pl-4 o md:pl-8) */}
+          <div className="flex flex-col items-start text-left pl-2 md:pl-8">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-primary-foreground">
               Contacto
             </h3>
@@ -56,7 +75,7 @@ export function Footer() {
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-primary-foreground/15 pt-6 text-xs text-primary-foreground/60 md:flex-row">
           <p>&copy; {new Date().getFullYear()} Nova Print. Todos los derechos reservados.</p>
 
-          {/* Acceso administrativo — discreto, no destinado al público */}
+          {/* Acceso administrativo — discreto */}
           <Link
             href="/login"
             className="group inline-flex items-center gap-1.5 text-primary-foreground/40 transition-colors hover:text-primary-foreground"

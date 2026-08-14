@@ -27,19 +27,19 @@ export function Header() {
           <Image
             src="/logo-nova-print.png"
             alt="Nova Print"
-            width={140}
-            height={40}
+            width={180}
+            height={50}
             priority
-            className="h-9 w-auto dark:hidden"
+            className="h-11 sm:h-12 w-auto object-contain dark:hidden"
           />
           {/* Logo blanco/contorno — modo oscuro */}
           <Image
             src="/logo-nova-print-white.png"
             alt="Nova Print"
-            width={140}
-            height={40}
+            width={180}
+            height={50}
             priority
-            className="hidden h-9 w-auto dark:block"
+            className="hidden h-11 sm:h-12 w-auto object-contain dark:block"
           />
         </Link>
 

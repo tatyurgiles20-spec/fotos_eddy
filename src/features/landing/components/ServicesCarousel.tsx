@@ -112,7 +112,7 @@ export function ServicesCarousel({
         onTouchEnd={handleTouchEnd}
         style={{ perspective: "1000px" }}
         className="relative flex h-[320px] sm:h-[380px] lg:h-[420px] w-full items-center justify-center"
-       >
+      >
         {services.map((service, index) => {
           const offset = getCircularOffset(index, currentIndex, length);
           const absOffset = Math.abs(offset);
@@ -133,14 +133,12 @@ export function ServicesCarousel({
                 opacity,
                 pointerEvents: isVisible ? "auto" : "none",
                 transition:
-                  "transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease, z-index 0.6s",
+                  "transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease, z-index 0.6s, box-shadow 0.6s ease",
               }}
-              
-              
-              className={`absolute aspect-[3/4] w-48 sm:w-60 lg:w-72 cursor-pointer select-none overflow-hidden rounded-2xl border border-border bg-card transition-all duration-500 ${
+              className={`absolute aspect-[3/4] w-48 sm:w-60 lg:w-72 cursor-pointer select-none rounded-2xl border border-border/80 bg-card overflow-hidden transition-all duration-500 ${
                 offset === 0
-                  ? "shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] dark:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.9)]"
-                  : "shadow-md"
+                  ? "shadow-[0_30px_60px_-10px_rgba(0,0,0,0.70)] dark:shadow-[0_0_50px_rgba(255,255,255,0.45)]"
+                  : "shadow-[0_20px_40px_-10px_rgba(0,0,0,0.50)] dark:shadow-[0_0_30px_rgba(255,255,255,0.25)]"
               }`}
             >
               <Image
@@ -151,6 +149,7 @@ export function ServicesCarousel({
                 className="pointer-events-none object-cover"
                 priority={offset === 0}
               />
+
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
               <div

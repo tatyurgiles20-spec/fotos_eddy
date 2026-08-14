@@ -34,7 +34,9 @@ export function FrameTeaserSection({ frame }: Props) {
               Prueba tus fotos con un marco
             </p>
             <p className="mt-2 max-w-md text-sm sm:text-base text-muted-foreground leading-relaxed">
-              Sube tu foto, elige uno de nuestros marcos y ajústala como quieras. Es gratis y toma un minuto.
+              Sube tu foto, elige uno de nuestros marcos y personalízala como quieras. 
+              Explora diferentes estilos y descubre cómo podría quedar tu recuerdo antes de 
+              llevarlo a un producto personalizado. ¡Es fácil, rápido y gratuito!
             </p>
             <Link
               href="/marcos"

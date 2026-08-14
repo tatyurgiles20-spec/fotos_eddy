@@ -5,23 +5,23 @@ export function FeaturedGallery({ images }: { images: ImageItem[] }) {
 
   return (
     <section id="galeria" className="mx-auto max-w-6xl px-6 py-20">
-     <div className="mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-      {/* Div vacío para balancear el grid en pantallas grandes */}
-      <div className="hidden sm:block sm:w-1/4" />
+      <div className="mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        {/* Div vacío para balancear el grid en pantallas grandes */}
+        <div className="hidden sm:block sm:w-1/4" />
 
-       {/* Título y barra centrados */}
-       <div className="text-center sm:w-1/2">
-       <span className="mb-3 block h-1 w-10 rounded-full bg-primary mx-auto" />
-       <h2 className="tag-handwritten !text-5xl sm:!text-6xl md:!text-7xl font-bold tracking-wide text-foreground">
-        Galería
-       </h2>
-      </div>
+        {/* Título y barra centrados */}
+        <div className="text-center sm:w-1/2">
+          <span className="mb-3 block h-1 w-10 rounded-full bg-primary mx-auto" />
+          <h2 className="tag-handwritten !text-5xl sm:!text-6xl md:!text-7xl font-bold tracking-wide text-foreground">
+            Galería
+          </h2>
+        </div>
 
         {/* Enlace alineado a la derecha */}
         <div className="text-center sm:text-right sm:w-1/4">
-         <a href="/galeria" className="text-sm font-medium text-primary hover:underline">
-          Ver todos los álbumes →
-         </a>
+          <a href="/galeria" className="text-sm font-medium text-primary hover:underline">
+            Ver todos los álbumes →
+          </a>
         </div>
       </div>
 
@@ -32,11 +32,14 @@ export function FeaturedGallery({ images }: { images: ImageItem[] }) {
             src={image.direct_url}
             alt={image.alt_text ?? ""}
             loading="lazy"
-            className="aspect-square w-full rounded-lg object-cover"
+            className="aspect-square w-full rounded-lg object-cover 
+                      shadow-[0_10px_25px_rgba(0,0,0,0.20)] 
+                      hover:shadow-[0_20px_35px_rgba(0,0,0,0.30)] 
+                      dark:shadow-[0_0_20px_rgba(255,255,255,0.18)] 
+                      dark:hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] 
+                      hover:-translate-y-1.5 transition-all duration-300"
           />
-        )
-        )
-        }
+        ))}
       </div>
     </section>
   );
