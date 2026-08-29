@@ -3,7 +3,7 @@ name: Deploy to Cloudflare Workers
 on:
   push:
     branches:
-      - main # O 'master' si es tu rama principal
+      - main
 
 jobs:
   deploy:
@@ -22,22 +22,41 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Next.js with OpenNext
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-        run: npx opennextjs-cloudflare build
+      # Paso para generar dinámicamente wrangler.jsonc con las variables de GitHub Secrets
+      - name: Generate wrangler.jsonc
+        run: |
+          cat <<EOF > wrangler.jsonc
+          {
+            "\$schema": "./node_modules/wrangler/config-schema.json",
+            "name": "fotoseddy",
+            "keep_names": false,
+            "main": ".open-next/worker.js",
+            "compatibility_date": "2026-07-24",
+            "compatibility_flags": ["nodejs_compat"],
+            "workers_dev": true,
+            "assets": {
+              "directory": ".open-next/assets",
+              "binding": "ASSETS"
+            },
+            "routes": [
+              { "pattern": "novaprintecu.com", "custom_domain": true },
+              { "pattern": "www.novaprintecu.com", "custom_domain": true }
+            ],
+            "vars": {
+              "NEXT_PUBLIC_SUPABASE_URL": "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}",
+              "NEXT_PUBLIC_SUPABASE_ANON_KEY": "${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}"
+            }
+          }
+          EOF
 
-      - name: Deploy to Cloudflare Workers
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy
-          packageManager: npm
+      # Ejecutamos el deploy completo usando npm run deploy
+      - name: Build & Deploy to Cloudflare
         env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+        run: npm run deploy
