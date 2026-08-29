@@ -23,34 +23,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Generamos el wrangler.jsonc solo con variables públicas
-      - name: Generate wrangler.jsonc
-        run: |
-          cat <<EOF > wrangler.jsonc
-          {
-            "\$schema": "./node_modules/wrangler/config-schema.json",
-            "name": "fotoseddy",
-            "keep_names": false,
-            "main": ".open-next/worker.js",
-            "compatibility_date": "2026-07-24",
-            "compatibility_flags": ["nodejs_compat"],
-            "workers_dev": true,
-            "assets": {
-              "directory": ".open-next/assets",
-              "binding": "ASSETS"
-            },
-            "routes": [
-              { "pattern": "novaprintecu.com", "custom_domain": true },
-              { "pattern": "www.novaprintecu.com", "custom_domain": true }
-            ],
-            "vars": {
-              "NEXT_PUBLIC_SUPABASE_URL": "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}",
-              "NEXT_PUBLIC_SUPABASE_ANON_KEY": "${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}"
-            }
-          }
-          EOF
-
-      # Subimos las secrets sensibles al Worker (se mantienen entre deploys)
+      # Subimos las secrets al Worker
       - name: Upload secrets to Cloudflare
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -60,7 +33,7 @@ jobs:
           echo "${{ secrets.GOOGLE_CLIENT_ID }}" | npx wrangler secret put GOOGLE_CLIENT_ID
           echo "${{ secrets.GOOGLE_CLIENT_SECRET }}" | npx wrangler secret put GOOGLE_CLIENT_SECRET
 
-      # Build + Deploy (con --keep-vars para no borrar variables del dashboard)
+      # Build + Deploy
       - name: Build & Deploy to Cloudflare
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
