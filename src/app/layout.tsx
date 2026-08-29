@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
 import { Sora, Inter, Caveat } from "next/font/google";
-
+ 
 // Tipografías
 const sora = Sora({
   subsets: ["latin"],
