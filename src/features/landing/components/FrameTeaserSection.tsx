@@ -9,22 +9,19 @@ export function FrameTeaserSection({ frame }: Props) {
   if (!frame) return null;
 
   return (
-   <section id="marcos" className="scroll-mt-20 py-16 bg-background">
+    <section id="marcos" className="scroll-mt-20 py-16 bg-background">
       <div className="container mx-auto px-4 max-w-5xl">
         {/* Encabezado centrado */}
         <div className="mx-auto max-w-2xl text-center mb-10">
-         {/* <span className="tag-handwritten !text-2xl sm:!text-3xl text-muted-foreground block mb-1">
-            Simulador Digital
-          </span> */}
           <h2 className="tag-handwritten !text-5xl sm:!text-6xl md:!text-7xl font-bold tracking-wide text-foreground">
             Marcos y Cuadros
           </h2>
         </div>
 
-        {/* Contenido de la sección */}
-        <div className="flex flex-col items-center gap-8 text-center md:flex-row md:text-left rounded-2xl border border-border/50 bg-card p-6 sm:p-8 shadow-soft">
+        {/* Contenido de la sección con SOMBRA VISIBLE EN AMBOS MODOS */}
+        <div className="flex flex-col items-center gap-8 text-center md:flex-row md:text-left rounded-2xl border border-border/60 bg-card p-6 sm:p-8 shadow-xl dark:shadow-[0_10px_30px_-5px_rgba(0,0,0,0.8)] dark:border-border">
           <div className="w-40 shrink-0 sm:w-52">
-            <div className="aspect-square overflow-hidden rounded-2xl bg-muted shadow-soft">
+            <div className="aspect-square overflow-hidden rounded-2xl bg-muted">
               <img src={frame.directUrl} alt={frame.name} className="h-full w-full object-contain" />
             </div>
           </div>

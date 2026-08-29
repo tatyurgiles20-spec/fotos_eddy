@@ -2,22 +2,22 @@ const STEPS = [
   {
     step: "01",
     title: "Cuéntanos tu idea",
-    description: "Selecciona una taza, camiseta, cuadro o sesión de fotografía.",
+    description: "¿Tienes una idea en mente? Cuéntanos qué necesitas y, si quieres, sube imágenes o fotos de referencia: te ayudamos a convertirla en un recuerdo único.",
   },
   {
     step: "02",
     title: "Revisa y confirma",
-    description: "Sube tu fotografía, frase o idea para plasmar en el producto.",
+    description: "Hemos creado una imagen según tu idea. Revísala y confírmanos si te gusta o si hay algo que quieras cambiar.",
   },
   {
     step: "03",
     title: "Elaboramos tu pedido",
-    description: "Te enviamos una previsualización para asegurar la máxima calidad.",
+    description: "Tu idea ha sido plasmada con la mejor calidad en el producto que has pedido.",
   },
   {
     step: "04",
     title: "Disfruta tu producto",
-    description: "Lo imprimimos con acabado profesional y te lo entregamos.",
+    description: "¡Tu pedido ha sido realizado! Puedes retirarlo en cualquier momento. Esperamos que te guste, y recuerda que en Nova Print transformamos tus ideas en recuerdos únicos.",
   },
 ];
 

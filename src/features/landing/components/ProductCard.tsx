@@ -16,13 +16,17 @@ export function ProductCard({ item }: { item: ProductWithImages }) {
     >
       <div className="relative aspect-square w-full bg-muted">
         {cover ? (
-          <Image
-            src={cover.direct_url}
-            alt={cover.alt_text ?? item.name}
-            fill
-            sizes="(max-width: 640px) 50vw, 25vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-          />
+          <>
+            <Image
+              src={cover.direct_url}
+              alt={cover.alt_text ?? item.name}
+              fill
+              sizes="(max-width: 640px) 50vw, 25vw"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            {/* Sombra ultra clara y delicada */}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent dark:from-black/30 opacity-70 group-hover:opacity-100 transition-opacity" />
+          </>
         ) : (
           <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
             Sin imagen

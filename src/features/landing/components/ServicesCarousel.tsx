@@ -14,7 +14,7 @@ type ServiceSlide = {
 };
 
 function toSlides(highlights: CategoryHighlight[]): ServiceSlide[] {
-  return highlights
+  const baseSlides = highlights
     .filter((h) => h.product_categories && h.images)
     .map((h) => ({
       id: h.id,
@@ -23,14 +23,20 @@ function toSlides(highlights: CategoryHighlight[]): ServiceSlide[] {
       imageUrl: h.images!.direct_url,
       href: `${h.target_type === "service" ? "/servicios" : "/productos"}?categoria=${h.product_categories!.slug}`,
     }));
-}
 
-// Calcula la distancia circular más corta entre el índice actual y la tarjeta objetivo
-function getCircularOffset(index: number, current: number, length: number) {
-  let diff = index - current;
-  if (diff > length / 2) diff -= length;
-  if (diff < -length / 2) diff += length;
-  return diff;
+  if (baseSlides.length === 0) return [];
+
+  let extended = [...baseSlides];
+  while (extended.length < 5) {
+    extended = [
+      ...extended,
+      ...baseSlides.map((item, idx) => ({
+        ...item,
+        id: `${item.id}-dup-${extended.length + idx}`,
+      })),
+    ];
+  }
+  return extended;
 }
 
 interface ServicesCarouselProps {
@@ -50,6 +56,18 @@ export function ServicesCarousel({
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
   const length = services.length;
+
+  // Detectamos si la pantalla es de escritorio/tablet para ajustar animaciones dinámicas
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const goTo = useCallback(
     (index: number) => {
@@ -97,10 +115,12 @@ export function ServicesCarousel({
 
   if (length === 0) return null;
 
+  const visibleOffsets = [-2, -1, 0, 1, 2];
+
   return (
-    <section className="mx-auto max-w-7xl px-6 py-12">
+    <section className="mx-auto max-w-7xl px-2 sm:px-6 py-12 overflow-x-clip">
       <div className="mb-10 text-center">
-        <h3 className="tag-handwritten !text-5xl sm:!text-6xl md:!text-7xl font-bold tracking-wide text-foreground">
+        <h3 className="tag-handwritten !text-3xl sm:!text-4xl md:!text-5xl font-bold tracking-wide text-foreground">
           {title}
         </h3>
       </div>
@@ -113,40 +133,59 @@ export function ServicesCarousel({
         style={{ perspective: "1000px" }}
         className="relative flex h-[320px] sm:h-[380px] lg:h-[420px] w-full items-center justify-center"
       >
-        {services.map((service, index) => {
-          const offset = getCircularOffset(index, currentIndex, length);
+        {visibleOffsets.map((offset) => {
+          const serviceIndex = ((currentIndex + offset) % length + length) % length;
+          const service = services[serviceIndex];
           const absOffset = Math.abs(offset);
-          const isVisible = absOffset <= 1;
-          const translateX = offset * 75;
-          const scale = offset === 0 ? 1 : 0.82;
-          const rotateY = offset * -35;
+
+          // Si es móvil y la posición es ±2, la ocultamos completamente
+          const isHiddenOnMobile = isMobile && absOffset === 2;
+
+          // Separación responsive
+          const stepPercent = isMobile ? 65 : 85;
+          const translateXPercent = offset * stepPercent;
+
+          const scale = offset === 0 ? 1 : absOffset === 1 ? (isMobile ? 0.75 : 0.8) : 0.62;
+          const rotateY = offset * -18;
           const zIndex = 10 - absOffset;
-          const opacity = !isVisible ? 0 : offset === 0 ? 1 : 0.7;
+
+          // Opacidad 0 si está oculta en móvil
+          const opacity = isHiddenOnMobile
+            ? 0
+            : offset === 0
+            ? 1
+            : absOffset === 1
+            ? 0.85
+            : 0.55;
+
+          const boxShadow =
+            offset === 0
+              ? "0 20px 40px -10px rgba(0,0,0,0.6)"
+              : absOffset === 1
+              ? "0 15px 30px -10px rgba(0,0,0,0.4)"
+              : "0 10px 20px -5px rgba(0,0,0,0.25)";
 
           return (
             <div
-              key={service.id}
-              onClick={() => handleCardClick(index, offset, service.href)}
+              key={`${service.id}-pos-${offset}`}
+              onClick={() => handleCardClick(serviceIndex, offset, service.href)}
               style={{
-                transform: `translateX(${translateX}%) scale(${scale}) rotateY(${rotateY}deg)`,
+                transform: `translateX(${translateXPercent}%) scale(${scale}) rotateY(${rotateY}deg)`,
                 zIndex,
                 opacity,
-                pointerEvents: isVisible ? "auto" : "none",
-                transition:
-                  "transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease, z-index 0.6s, box-shadow 0.6s ease",
+                boxShadow,
+                pointerEvents: isHiddenOnMobile ? "none" : "auto",
+                transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
+                willChange: "transform, opacity",
               }}
-              className={`absolute aspect-[3/4] w-48 sm:w-60 lg:w-72 cursor-pointer select-none rounded-2xl border border-border/80 bg-card overflow-hidden transition-all duration-500 ${
-                offset === 0
-                  ? "shadow-[0_30px_60px_-10px_rgba(0,0,0,0.70)] dark:shadow-[0_0_50px_rgba(255,255,255,0.45)]"
-                  : "shadow-[0_20px_40px_-10px_rgba(0,0,0,0.50)] dark:shadow-[0_0_30px_rgba(255,255,255,0.25)]"
-              }`}
+              className="absolute aspect-[3/4] w-36 sm:w-40 lg:w-52 cursor-pointer select-none rounded-2xl border border-border/80 bg-card overflow-hidden"
             >
               <Image
                 src={service.imageUrl}
                 alt={service.title}
                 fill
-                sizes="(max-width: 640px) 192px, (max-width: 1024px) 240px, 288px"
-                className="pointer-events-none object-cover"
+                sizes="(max-width: 640px) 144px, (max-width: 1024px) 160px, 208px"
+                className="pointer-events-none object-cover transition-transform duration-700 ease-out"
                 priority={offset === 0}
               />
 
@@ -155,14 +194,15 @@ export function ServicesCarousel({
               <div
                 style={{
                   opacity: offset === 0 ? 1 : 0,
-                  transition: "opacity 0.4s ease",
+                  transform: offset === 0 ? "translateY(0)" : "translateY(10px)",
+                  transition: "opacity 0.6s ease, transform 0.6s ease",
                 }}
-                className="pointer-events-none absolute inset-x-0 bottom-0 p-5"
+                className="pointer-events-none absolute inset-x-0 bottom-0 p-3 sm:p-5"
               >
-                <h4 className="font-display text-base sm:text-lg font-bold text-white">
+                <h4 className="font-display text-xs sm:text-base lg:text-lg font-bold text-white">
                   {service.title}
                 </h4>
-                <p className="mt-1 text-xs sm:text-sm text-white/80 line-clamp-2">
+                <p className="mt-1 text-[10px] sm:text-sm text-white/80 line-clamp-2">
                   {service.description}
                 </p>
               </div>
@@ -177,7 +217,7 @@ export function ServicesCarousel({
             key={service.id}
             onClick={() => goTo(index)}
             aria-label={`Ir a ${service.title}`}
-            className={`h-2 rounded-full transition-all duration-300 ${
+            className={`h-2 rounded-full transition-all duration-500 ease-out ${
               index === currentIndex
                 ? "w-6 bg-foreground"
                 : "w-2 bg-foreground/30"

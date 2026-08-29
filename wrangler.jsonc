@@ -1,12 +1,17 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "fotoseddy",          // ← cambia el nombre
+  "name": "fotoseddy",
   "keep_names": false,
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-07-24",
   "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
-  } 
+  },
+  "routes": [
+    { "pattern": "novaprintecu.com", "custom_domain": true },
+    { "pattern": "www.novaprintecu.com", "custom_domain": true }
+  ]
 }
