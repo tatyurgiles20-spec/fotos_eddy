@@ -100,80 +100,82 @@ const EMPTY_FORM = {
   overlayPosition: "close" as OverlayPosition,
   overlayLayer: "front" as OverlayLayer,
   overlayWidth: "medium" as OverlayWidth,
-    backgroundGradient: null as string | null,
+  backgroundGradient: null as string | null,
   buttonGradient: null as string | null,
+  textBackgroundGradient: null as string | null,
 };
 
 const DEFAULT_PICKED_COLOR = "#ffffff";
 const DEFAULT_GRADIENT = "#ff6b6b, #4ecdc4";
 const DEFAULT_BG_COLOR = "#000000";
-const DEFAULT_TEXT_PANEL_COLOR = "#000000";
 
 export function CarouselSlideForm({ editingSlide, onCreate, onUpdate, onCancelEdit }: Props) {
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
 
-useEffect(() => {
-  if (editingSlide) {
-    setForm({
-      imageId: editingSlide.imageId,
-      imageUrl: editingSlide.imageUrl,
-      altText: editingSlide.altText,
-      title: editingSlide.title ?? "",
-      subtitle: editingSlide.subtitle ?? "",
-      buttonText: editingSlide.buttonText ?? "",
-      buttonHref: editingSlide.buttonHref ?? "",
-      buttonStyle: editingSlide.buttonStyle,
-      fontFamily: editingSlide.fontFamily,
-      titleColor: editingSlide.titleColor,
-      subtitleColor: editingSlide.subtitleColor,
-      titleGradient: editingSlide.titleGradient,
-      subtitleGradient: editingSlide.subtitleGradient,
-      backgroundColor: editingSlide.backgroundColor,
-      textBackgroundColor: editingSlide.textBackgroundColor,
-      textPosition: editingSlide.textPosition,
-      showUnderline: editingSlide.showUnderline,
-      overlayImageId: editingSlide.overlayImageId,
-      overlayImageUrl: editingSlide.overlayImageUrl,
-      overlayPosition: editingSlide.overlayPosition,
-      overlayLayer: editingSlide.overlayLayer,
-      overlayWidth: editingSlide.overlayWidth,
-      backgroundGradient: editingSlide.backgroundGradient,
+  useEffect(() => {
+    if (editingSlide) {
+      setForm({
+        imageId: editingSlide.imageId,
+        imageUrl: editingSlide.imageUrl,
+        altText: editingSlide.altText,
+        title: editingSlide.title ?? "",
+        subtitle: editingSlide.subtitle ?? "",
+        buttonText: editingSlide.buttonText ?? "",
+        buttonHref: editingSlide.buttonHref ?? "",
+        buttonStyle: editingSlide.buttonStyle,
+        fontFamily: editingSlide.fontFamily,
+        titleColor: editingSlide.titleColor,
+        subtitleColor: editingSlide.subtitleColor,
+        titleGradient: editingSlide.titleGradient,
+        subtitleGradient: editingSlide.subtitleGradient,
+        backgroundColor: editingSlide.backgroundColor,
+        textBackgroundColor: editingSlide.textBackgroundColor,
+        textPosition: editingSlide.textPosition,
+        showUnderline: editingSlide.showUnderline,
+        overlayImageId: editingSlide.overlayImageId,
+        overlayImageUrl: editingSlide.overlayImageUrl,
+        overlayPosition: editingSlide.overlayPosition,
+        overlayLayer: editingSlide.overlayLayer,
+        overlayWidth: editingSlide.overlayWidth,
+        backgroundGradient: editingSlide.backgroundGradient,
         buttonGradient: editingSlide.buttonGradient,
-    });
-  } else {
-    setForm(EMPTY_FORM);
-  }
-}, [editingSlide]);
+        textBackgroundGradient: editingSlide.textBackgroundGradient ?? null,
+      });
+    } else {
+      setForm(EMPTY_FORM);
+    }
+  }, [editingSlide]);
 
   const handleSubmit = async () => {
     if (!form.imageId || !form.altText) return;
     setSaving(true);
     try {
-const input: CarouselSlideInput = {
-  image_id: form.imageId,
-  alt_text: form.altText,
-  title: form.title || null,
-  subtitle: form.subtitle || null,
-  button_text: form.buttonText || null,
-  button_href: form.buttonHref || null,
-  button_style: form.buttonStyle,
-  font_family: form.fontFamily === "auto" ? null : form.fontFamily,
-  title_color: form.titleColor,
-  subtitle_color: form.subtitleColor,
-  title_gradient: form.titleGradient,
-  subtitle_gradient: form.subtitleGradient,
-  background_color: form.backgroundColor,
-  text_background_color: form.textBackgroundColor,
-  overlay_image_id: form.overlayImageId,
-  overlay_position: form.overlayPosition,
-  overlay_layer: form.overlayLayer,
-  overlay_width: form.overlayWidth,
-  text_position: form.textPosition,
-  show_underline: form.showUnderline,
-  background_gradient: form.backgroundGradient,
+      const input: CarouselSlideInput = {
+        image_id: form.imageId,
+        alt_text: form.altText,
+        title: form.title || null,
+        subtitle: form.subtitle || null,
+        button_text: form.buttonText || null,
+        button_href: form.buttonHref || null,
+        button_style: form.buttonStyle,
+        font_family: form.fontFamily === "auto" ? null : form.fontFamily,
+        title_color: form.titleColor,
+        subtitle_color: form.subtitleColor,
+        title_gradient: form.titleGradient,
+        subtitle_gradient: form.subtitleGradient,
+        background_color: form.backgroundColor,
+        text_background_color: form.textBackgroundColor,
+        overlay_image_id: form.overlayImageId,
+        overlay_position: form.overlayPosition,
+        overlay_layer: form.overlayLayer,
+        overlay_width: form.overlayWidth,
+        text_position: form.textPosition,
+        show_underline: form.showUnderline,
+        background_gradient: form.backgroundGradient,
         button_gradient: form.buttonGradient,
-};
+        text_background_gradient: form.textBackgroundGradient  
+      };
 
       if (editingSlide) {
         await onUpdate(editingSlide.id, input);
@@ -197,28 +199,29 @@ const input: CarouselSlideInput = {
 
       <div className="mb-4">
         <CarouselSlidePreview
-  imageUrl={form.imageUrl}
-  altText={form.altText}
-  title={form.title}
-  subtitle={form.subtitle}
-  buttonText={form.buttonText}
-  buttonStyle={form.buttonStyle}
-  fontFamily={form.fontFamily}
-  titleColor={form.titleColor}
-  subtitleColor={form.subtitleColor}
-  titleGradient={form.titleGradient}
-  subtitleGradient={form.subtitleGradient}
-  backgroundColor={form.backgroundColor}
-  textBackgroundColor={form.textBackgroundColor}
-  textPosition={form.textPosition}
-  showUnderline={form.showUnderline}
-  overlayImageUrl={form.overlayImageUrl}
-  overlayPosition={form.overlayPosition}
-  overlayLayer={form.overlayLayer}
-  overlayWidth={form.overlayWidth}
-  backgroundGradient={form.backgroundGradient}
+          imageUrl={form.imageUrl}
+          altText={form.altText}
+          title={form.title}
+          subtitle={form.subtitle}
+          buttonText={form.buttonText}
+          buttonStyle={form.buttonStyle}
+          fontFamily={form.fontFamily}
+          titleColor={form.titleColor}
+          subtitleColor={form.subtitleColor}
+          titleGradient={form.titleGradient}
+          subtitleGradient={form.subtitleGradient}
+          backgroundColor={form.backgroundColor}
+          textBackgroundColor={form.textBackgroundColor}
+          textPosition={form.textPosition}
+          showUnderline={form.showUnderline}
+          overlayImageUrl={form.overlayImageUrl}
+          overlayPosition={form.overlayPosition}
+          overlayLayer={form.overlayLayer}
+          overlayWidth={form.overlayWidth}
+          backgroundGradient={form.backgroundGradient}
           buttonGradient={form.buttonGradient}
-/>
+          textBackgroundGradient={form.textBackgroundGradient}
+        />
       </div>
 
       <div className="mb-4">
@@ -253,7 +256,7 @@ const input: CarouselSlideInput = {
       <div className="mb-3">
         <div className="flex items-center mb-1">
           <label className="text-xs font-medium text-muted-foreground">Título</label>
-          <InfoTooltip text="El encabezado principal que se superpondrá sobre la imagen." />
+          <InfoTooltip text="El encabezado principal del slide, en el panel de texto." />
         </div>
         <input
           type="text"
@@ -338,23 +341,22 @@ const input: CarouselSlideInput = {
       </div>
 
       {/* Subtítulo */}
-{/* Subtítulo */}
-<div className="mb-3">
-  <div className="flex items-center mb-1">
-    <label className="text-xs font-medium text-muted-foreground">Subtítulo</label>
-    <InfoTooltip text="Un texto secundario descriptivo debajo del título principal. En computadora usa Shift + Enter para saltar de línea." />
-  </div>
-  <textarea
-    placeholder="Subtítulo (opcional)"
-    value={form.subtitle}
-    onChange={(e) => setForm((f) => ({ ...f, subtitle: e.target.value }))}
-    rows={2}
-    className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm resize-y"
-  />
-  <p className="mt-1 text-[11px] text-muted-foreground">
-    💡 En computadora, presiona <kbd className="rounded border border-border bg-muted px-1 py-0.5 font-mono">Shift</kbd> + <kbd className="rounded border border-border bg-muted px-1 py-0.5 font-mono">Enter</kbd> para bajar de línea. En celular, usa el botón de salto de línea del teclado.
-  </p>
-</div>
+      <div className="mb-3">
+        <div className="flex items-center mb-1">
+          <label className="text-xs font-medium text-muted-foreground">Subtítulo</label>
+          <InfoTooltip text="Un texto secundario descriptivo debajo del título principal. En computadora usa Shift + Enter para saltar de línea." />
+        </div>
+        <textarea
+          placeholder="Subtítulo (opcional)"
+          value={form.subtitle}
+          onChange={(e) => setForm((f) => ({ ...f, subtitle: e.target.value }))}
+          rows={2}
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm resize-y"
+        />
+        <p className="mt-1 text-[11px] text-muted-foreground">
+          💡 En computadora, presiona <kbd className="rounded border border-border bg-muted px-1 py-0.5 font-mono">Shift</kbd> + <kbd className="rounded border border-border bg-muted px-1 py-0.5 font-mono">Enter</kbd> para bajar de línea. En celular, usa el botón de salto de línea del teclado.
+        </p>
+      </div>
 
       {/* Color / degradado del subtítulo */}
       <div className="mb-3 flex flex-wrap items-center gap-3 rounded-lg border border-border bg-background px-3 py-2">
@@ -419,165 +421,198 @@ const input: CarouselSlideInput = {
         )}
       </div>
 
-      {/* Fondo del slide y panel detrás del texto */}
+      {/* Fondo detrás de la imagen y panel de texto */}
       <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-<div className="rounded-lg border border-border bg-background px-3 py-2">
-  <div className="flex items-center mb-1">
-    <span className="text-xs font-medium text-muted-foreground">Fondo del slide</span>
-    <InfoTooltip text="Se ve detrás de la imagen. Útil si tu imagen tiene fondo transparente." />
-  </div>
-  <select
-    value={form.backgroundGradient ? "gradient" : form.backgroundColor ? "solid" : "auto"}
-    onChange={(e) => {
-      const mode = e.target.value;
-      if (mode === "auto") {
-        setForm((f) => ({ ...f, backgroundColor: null, backgroundGradient: null }));
-      } else if (mode === "solid") {
-        setForm((f) => ({ ...f, backgroundColor: DEFAULT_BG_COLOR, backgroundGradient: null }));
-      } else {
-        setForm((f) => ({ ...f, backgroundGradient: DEFAULT_GRADIENT, backgroundColor: null }));
-      }
-    }}
-    className="w-full rounded-lg border border-border bg-background px-2 py-1 text-xs"
-  >
-    <option value="auto">Negro (por defecto)</option>
-    <option value="solid">Color sólido</option>
-    <option value="gradient">Degradado</option>
-  </select>
+        <div className="rounded-lg border border-border bg-background px-3 py-2">
+          <div className="flex items-center mb-1">
+            <span className="text-xs font-medium text-muted-foreground">Fondo detrás de la imagen</span>
+            <InfoTooltip text="Se ve si tu imagen tiene fondo transparente." />
+          </div>
+          <select
+            value={form.backgroundGradient ? "gradient" : form.backgroundColor ? "solid" : "auto"}
+            onChange={(e) => {
+              const mode = e.target.value;
+              if (mode === "auto") {
+                setForm((f) => ({ ...f, backgroundColor: null, backgroundGradient: null }));
+              } else if (mode === "solid") {
+                setForm((f) => ({ ...f, backgroundColor: DEFAULT_BG_COLOR, backgroundGradient: null }));
+              } else {
+                setForm((f) => ({ ...f, backgroundGradient: DEFAULT_GRADIENT, backgroundColor: null }));
+              }
+            }}
+            className="w-full rounded-lg border border-border bg-background px-2 py-1 text-xs"
+          >
+            <option value="auto">Negro (por defecto)</option>
+            <option value="solid">Color sólido</option>
+            <option value="gradient">Degradado</option>
+          </select>
 
-  {form.backgroundColor !== null && (
-    <input
-      type="color"
-      value={form.backgroundColor}
-      onChange={(e) => setForm((f) => ({ ...f, backgroundColor: e.target.value }))}
-      className="mt-2 h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
-    />
-  )}
+          {form.backgroundColor !== null && (
+            <input
+              type="color"
+              value={form.backgroundColor}
+              onChange={(e) => setForm((f) => ({ ...f, backgroundColor: e.target.value }))}
+              className="mt-2 h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
+            />
+          )}
 
-  {form.backgroundGradient !== null && (
-    <div className="mt-2 flex items-center gap-1.5">
-      <input
-        type="color"
-        value={form.backgroundGradient.split(",")[0]?.trim() || "#ff6b6b"}
-        onChange={(e) =>
-          setForm((f) => {
-            const to = f.backgroundGradient?.split(",")[1]?.trim() || "#4ecdc4";
-            return { ...f, backgroundGradient: `${e.target.value}, ${to}` };
-          })
-        }
-        className="h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
-      />
-      <input
-        type="color"
-        value={form.backgroundGradient.split(",")[1]?.trim() || "#4ecdc4"}
-        onChange={(e) =>
-          setForm((f) => {
-            const from = f.backgroundGradient?.split(",")[0]?.trim() || "#ff6b6b";
-            return { ...f, backgroundGradient: `${from}, ${e.target.value}` };
-          })
-        }
-        className="h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
-      />
-    </div>
-  )}
-</div>
+          {form.backgroundGradient !== null && (
+            <div className="mt-2 flex items-center gap-1.5">
+              <input
+                type="color"
+                value={form.backgroundGradient.split(",")[0]?.trim() || "#ff6b6b"}
+                onChange={(e) =>
+                  setForm((f) => {
+                    const to = f.backgroundGradient?.split(",")[1]?.trim() || "#4ecdc4";
+                    return { ...f, backgroundGradient: `${e.target.value}, ${to}` };
+                  })
+                }
+                className="h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
+              />
+              <input
+                type="color"
+                value={form.backgroundGradient.split(",")[1]?.trim() || "#4ecdc4"}
+                onChange={(e) =>
+                  setForm((f) => {
+                    const from = f.backgroundGradient?.split(",")[0]?.trim() || "#ff6b6b";
+                    return { ...f, backgroundGradient: `${from}, ${e.target.value}` };
+                  })
+                }
+                className="h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
+              />
+            </div>
+          )}
+        </div>
 
         <div className="rounded-lg border border-border bg-background px-3 py-2">
           <div className="flex items-center mb-1">
-            <span className="text-xs font-medium text-muted-foreground">Panel detrás del texto</span>
-            <InfoTooltip text="Una caja de color detrás del título y subtítulo, para que se lean bien sobre cualquier fondo." />
+            <span className="text-xs font-medium text-muted-foreground">Panel de texto</span>
+            <InfoTooltip text="El fondo del bloque donde va el título, subtítulo y botón." />
           </div>
-          <div className="flex items-center gap-2">
-            <label className="flex items-center gap-1.5 text-xs">
-              <input
-                type="checkbox"
-                checked={form.textBackgroundColor === null}
-                onChange={(e) =>
-                  setForm((f) => ({
-                    ...f,
-                    textBackgroundColor: e.target.checked ? null : DEFAULT_TEXT_PANEL_COLOR,
-                  }))
-                }
-              />
-              Sin panel
-            </label>
-            {form.textBackgroundColor !== null && (
+          <select
+            value={form.textBackgroundGradient ? "gradient" : form.textBackgroundColor ? "solid" : "auto"}
+            onChange={(e) => {
+              const mode = e.target.value;
+              if (mode === "auto") {
+                setForm((f) => ({ ...f, textBackgroundColor: null, textBackgroundGradient: null }));
+              } else if (mode === "solid") {
+                setForm((f) => ({ ...f, textBackgroundColor: "#ffffff", textBackgroundGradient: null }));
+              } else {
+                setForm((f) => ({ ...f, textBackgroundGradient: DEFAULT_GRADIENT, textBackgroundColor: null }));
+              }
+            }}
+            className="w-full rounded-lg border border-border bg-background px-2 py-1 text-xs"
+          >
+            <option value="auto">Blanco (por defecto)</option>
+            <option value="solid">Color sólido</option>
+            <option value="gradient">Degradado</option>
+          </select>
+
+          {form.textBackgroundColor !== null && (
+            <input
+              type="color"
+              value={form.textBackgroundColor}
+              onChange={(e) => setForm((f) => ({ ...f, textBackgroundColor: e.target.value }))}
+              className="mt-2 h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
+            />
+          )}
+
+          {form.textBackgroundGradient !== null && (
+            <div className="mt-2 flex items-center gap-1.5">
               <input
                 type="color"
-                value={form.textBackgroundColor}
-                onChange={(e) => setForm((f) => ({ ...f, textBackgroundColor: e.target.value }))}
+                value={form.textBackgroundGradient.split(",")[0]?.trim() || "#ff6b6b"}
+                onChange={(e) =>
+                  setForm((f) => {
+                    const to = f.textBackgroundGradient?.split(",")[1]?.trim() || "#4ecdc4";
+                    return { ...f, textBackgroundGradient: `${e.target.value}, ${to}` };
+                  })
+                }
                 className="h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
               />
-            )}
-          </div>
+              <input
+                type="color"
+                value={form.textBackgroundGradient.split(",")[1]?.trim() || "#4ecdc4"}
+                onChange={(e) =>
+                  setForm((f) => {
+                    const from = f.textBackgroundGradient?.split(",")[0]?.trim() || "#ff6b6b";
+                    return { ...f, textBackgroundGradient: `${from}, ${e.target.value}` };
+                  })
+                }
+                className="h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
+              />
+            </div>
+          )}
         </div>
       </div>
-{/* Imagen superpuesta (logo / texto-imagen) sobre el título */}
-<div className="mb-4 rounded-lg border border-border bg-background px-3 py-2">
-  <div className="flex items-center mb-2">
-    <span className="text-xs font-medium text-muted-foreground">Imagen sobre el título (logo, texto personalizado)</span>
-    <InfoTooltip text="Sube un logo o una imagen de texto personalizada que aparecerá junto al título. Puedes ajustar qué tan cerca va y si queda encima o detrás del título." />
-  </div>
 
-  <ImagePicker
-    selectedImageId={form.overlayImageId}
-    onSelect={(imageId, directUrl) =>
-      setForm((f) => ({ ...f, overlayImageId: imageId, overlayImageUrl: directUrl }))
-    }
-  />
+      {/* Imagen superpuesta (logo / texto-imagen) sobre el título */}
+      <div className="mb-4 rounded-lg border border-border bg-background px-3 py-2">
+        <div className="flex items-center mb-2">
+          <span className="text-xs font-medium text-muted-foreground">Imagen sobre el título (logo, texto personalizado)</span>
+          <InfoTooltip text="Sube un logo o una imagen de texto personalizada que aparecerá junto al título. Puedes ajustar qué tan cerca va y si queda encima o detrás del título." />
+        </div>
 
-  {form.overlayImageId && (
-    <div className="mt-3 flex flex-wrap items-center gap-3">
-      <button
-        type="button"
-        onClick={() => setForm((f) => ({ ...f, overlayImageId: null, overlayImageUrl: null }))}
-        className="text-xs text-destructive underline"
-      >
-        Quitar imagen
-      </button>
+        <ImagePicker
+          selectedImageId={form.overlayImageId}
+          onSelect={(imageId, directUrl) =>
+            setForm((f) => ({ ...f, overlayImageId: imageId, overlayImageUrl: directUrl }))
+          }
+        />
 
-      <div className="flex items-center gap-1.5">
-        <label className="text-xs text-muted-foreground">Distancia al título</label>
-        <select
-          value={form.overlayPosition}
-          onChange={(e) => setForm((f) => ({ ...f, overlayPosition: e.target.value as OverlayPosition }))}
-          className="rounded-lg border border-border bg-background px-2 py-1 text-xs"
-        >
-          <option value="overlap">Superpuesta (se solapa)</option>
-          <option value="tight">Muy pegada</option>
-          <option value="close">Cerca (recomendado)</option>
-          <option value="spaced">Con espacio</option>
-          <option value="far">Separada</option>
-        </select>
+        {form.overlayImageId && (
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setForm((f) => ({ ...f, overlayImageId: null, overlayImageUrl: null }))}
+              className="text-xs text-destructive underline"
+            >
+              Quitar imagen
+            </button>
+
+            <div className="flex items-center gap-1.5">
+              <label className="text-xs text-muted-foreground">Distancia al título</label>
+              <select
+                value={form.overlayPosition}
+                onChange={(e) => setForm((f) => ({ ...f, overlayPosition: e.target.value as OverlayPosition }))}
+                className="rounded-lg border border-border bg-background px-2 py-1 text-xs"
+              >
+                <option value="overlap">Superpuesta (se solapa)</option>
+                <option value="tight">Muy pegada</option>
+                <option value="close">Cerca (recomendado)</option>
+                <option value="spaced">Con espacio</option>
+                <option value="far">Separada</option>
+              </select>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <label className="text-xs text-muted-foreground">Capa</label>
+              <select
+                value={form.overlayLayer}
+                onChange={(e) => setForm((f) => ({ ...f, overlayLayer: e.target.value as OverlayLayer }))}
+                className="rounded-lg border border-border bg-background px-2 py-1 text-xs"
+              >
+                <option value="front">Encima del título</option>
+                <option value="back">Detrás del título</option>
+              </select>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <label className="text-xs text-muted-foreground">Tamaño</label>
+              <select
+                value={form.overlayWidth}
+                onChange={(e) => setForm((f) => ({ ...f, overlayWidth: e.target.value as OverlayWidth }))}
+                className="rounded-lg border border-border bg-background px-2 py-1 text-xs"
+              >
+                <option value="small">Pequeño</option>
+                <option value="medium">Mediano</option>
+                <option value="large">Grande</option>
+              </select>
+            </div>
+          </div>
+        )}
       </div>
 
-      <div className="flex items-center gap-1.5">
-        <label className="text-xs text-muted-foreground">Capa</label>
-        <select
-          value={form.overlayLayer}
-          onChange={(e) => setForm((f) => ({ ...f, overlayLayer: e.target.value as OverlayLayer }))}
-          className="rounded-lg border border-border bg-background px-2 py-1 text-xs"
-        >
-          <option value="front">Encima del título</option>
-          <option value="back">Detrás del título</option>
-        </select>
-      </div>
-
-      <div className="flex items-center gap-1.5">
-        <label className="text-xs text-muted-foreground">Tamaño</label>
-        <select
-          value={form.overlayWidth}
-          onChange={(e) => setForm((f) => ({ ...f, overlayWidth: e.target.value as OverlayWidth }))}
-          className="rounded-lg border border-border bg-background px-2 py-1 text-xs"
-        >
-          <option value="small">Pequeño</option>
-          <option value="medium">Mediano</option>
-          <option value="large">Grande</option>
-        </select>
-      </div>
-    </div>
-  )}
-</div>
       {/* Fuente y Posición */}
       <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
@@ -601,7 +636,7 @@ const input: CarouselSlideInput = {
         <div>
           <div className="flex items-center mb-1">
             <label className="text-xs font-medium text-muted-foreground">Alineación del texto</label>
-            <InfoTooltip text="Ubica la caja de texto dentro de la imagen del carrusel." />
+            <InfoTooltip text="Ubica el bloque de texto dentro de su panel (izquierda/centro/derecha, arriba/abajo)." />
           </div>
           <select
             value={form.textPosition}
@@ -652,45 +687,45 @@ const input: CarouselSlideInput = {
             <label className="text-xs font-medium text-muted-foreground">Estilo visual del botón</label>
             <InfoTooltip text="Cambia la apariencia gráfica del botón entre relleno, contorno o plano." />
           </div>
-<select
-  value={form.buttonStyle}
-  onChange={(e) => setForm((f) => ({ ...f, buttonStyle: e.target.value as ButtonStyle }))}
-  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
->
-  {BUTTON_STYLE_OPTIONS.map((opt) => (
-    <option key={opt.value} value={opt.value}>
-      {opt.label}
-    </option>
-  ))}
-</select>
+          <select
+            value={form.buttonStyle}
+            onChange={(e) => setForm((f) => ({ ...f, buttonStyle: e.target.value as ButtonStyle }))}
+            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+          >
+            {BUTTON_STYLE_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
 
-{form.buttonStyle === "gradient" && (
-  <div className="mt-2 flex items-center gap-1.5">
-    <span className="text-xs text-muted-foreground">Colores</span>
-    <input
-      type="color"
-      value={(form.buttonGradient ?? DEFAULT_GRADIENT).split(",")[0]?.trim() || "#ff6b6b"}
-      onChange={(e) =>
-        setForm((f) => {
-          const to = (f.buttonGradient ?? DEFAULT_GRADIENT).split(",")[1]?.trim() || "#4ecdc4";
-          return { ...f, buttonGradient: `${e.target.value}, ${to}` };
-        })
-      }
-      className="h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
-    />
-    <input
-      type="color"
-      value={(form.buttonGradient ?? DEFAULT_GRADIENT).split(",")[1]?.trim() || "#4ecdc4"}
-      onChange={(e) =>
-        setForm((f) => {
-          const from = (f.buttonGradient ?? DEFAULT_GRADIENT).split(",")[0]?.trim() || "#ff6b6b";
-          return { ...f, buttonGradient: `${from}, ${e.target.value}` };
-        })
-      }
-      className="h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
-    />
-  </div>
-)}
+          {form.buttonStyle === "gradient" && (
+            <div className="mt-2 flex items-center gap-1.5">
+              <span className="text-xs text-muted-foreground">Colores</span>
+              <input
+                type="color"
+                value={(form.buttonGradient ?? DEFAULT_GRADIENT).split(",")[0]?.trim() || "#ff6b6b"}
+                onChange={(e) =>
+                  setForm((f) => {
+                    const to = (f.buttonGradient ?? DEFAULT_GRADIENT).split(",")[1]?.trim() || "#4ecdc4";
+                    return { ...f, buttonGradient: `${e.target.value}, ${to}` };
+                  })
+                }
+                className="h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
+              />
+              <input
+                type="color"
+                value={(form.buttonGradient ?? DEFAULT_GRADIENT).split(",")[1]?.trim() || "#4ecdc4"}
+                onChange={(e) =>
+                  setForm((f) => {
+                    const from = (f.buttonGradient ?? DEFAULT_GRADIENT).split(",")[0]?.trim() || "#ff6b6b";
+                    return { ...f, buttonGradient: `${from}, ${e.target.value}` };
+                  })
+                }
+                className="h-6 w-10 cursor-pointer rounded border border-border bg-transparent"
+              />
+            </div>
+          )}
         </div>
       </div>
 

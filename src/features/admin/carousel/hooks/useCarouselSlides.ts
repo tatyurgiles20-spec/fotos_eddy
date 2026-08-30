@@ -28,6 +28,7 @@ export type CarouselSlideInput = {
   overlay_width?: OverlayWidth;
   background_gradient?: string | null;
   button_gradient?: string | null;
+  text_background_gradient?: string | null;  
 };
 export function useCarouselSlides(carouselKey: string) {
   const [slides, setSlides] = useState<CarouselSlide[]>([]);

@@ -40,6 +40,7 @@ export type CarouselSlide = {
   active: boolean;
   backgroundGradient: string | null;
   buttonGradient: string | null;
+  textBackgroundGradient: string | null;
 };
 
 export type CarouselSlideRow = {
@@ -69,8 +70,9 @@ export type CarouselSlideRow = {
   active: boolean;
   images: { direct_url: string } | null;
   overlay_image: { direct_url: string } | null;
-    background_gradient: string | null;
+  background_gradient: string | null;
   button_gradient: string | null;
+  text_background_gradient: string | null;
 };
 
 export function mapCarouselSlideRow(row: CarouselSlideRow): CarouselSlide {
@@ -101,7 +103,8 @@ export function mapCarouselSlideRow(row: CarouselSlideRow): CarouselSlide {
     showUnderline: row.show_underline ?? true,
     position: row.position,
     active: row.active,
-        backgroundGradient: row.background_gradient ?? null,
+    backgroundGradient: row.background_gradient ?? null,
     buttonGradient: row.button_gradient ?? null,
+    textBackgroundGradient: row.text_background_gradient ?? null,
   };
 }

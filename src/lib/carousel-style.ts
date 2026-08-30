@@ -102,3 +102,10 @@ export function getButtonGradientStyle(buttonGradient: string | null): CSSProper
   if (colors.length < 2) return undefined;
   return { backgroundImage: `linear-gradient(135deg, ${colors.join(", ")})` };
 }
+export function getPanelStyle(color: string | null, gradient: string | null): CSSProperties {
+  const colors = parseGradientColors(gradient);
+  if (colors.length >= 2) {
+    return { backgroundImage: `linear-gradient(135deg, ${colors.join(", ")})` };
+  }
+  return { backgroundColor: color?.trim() || "#ffffff" };
+}

@@ -13,7 +13,7 @@ export async function getCarouselSlides(carouselKey: string): Promise<CarouselSl
   const { data, error } = await supabase
     .from("carousel_slides")
 .select(
-  "id, carousel_key, image_id, alt_text, title, subtitle, button_text, button_href, button_style, font_family, title_color, subtitle_color, title_gradient, subtitle_gradient, background_color, text_background_color,background_gradient, button_gradient, overlay_image_id, overlay_position, overlay_layer, overlay_width, text_position, show_underline, position, active, images!carousel_slides_image_id_fkey ( direct_url ), overlay_image:images!carousel_slides_overlay_image_id_fkey ( direct_url )"
+  "id, carousel_key, image_id, alt_text, title, subtitle, button_text, button_href, button_style, font_family, title_color, subtitle_color, title_gradient, subtitle_gradient, background_color, text_background_color, text_background_gradient, background_gradient, button_gradient, overlay_image_id, overlay_position, overlay_layer, overlay_width, text_position, show_underline, position, active, images!carousel_slides_image_id_fkey ( id, direct_url ), overlay_image:images!carousel_slides_overlay_image_id_fkey ( direct_url )"
 )
     .eq("carousel_key", carouselKey)
     .eq("active", true)
