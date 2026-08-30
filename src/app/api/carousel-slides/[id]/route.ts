@@ -45,6 +45,7 @@ export async function PUT(
       background_gradient: body.background_gradient,
       button_gradient: body.button_gradient,
       text_background_gradient: body.text_background_gradient,
+      image_position: body.image_position
     })
     .eq("id", id)
     .select()

@@ -29,6 +29,7 @@ export type CarouselSlideInput = {
   background_gradient?: string | null;
   button_gradient?: string | null;
   text_background_gradient?: string | null;  
+  image_position?: "left" | "right";
 };
 export function useCarouselSlides(carouselKey: string) {
   const [slides, setSlides] = useState<CarouselSlide[]>([]);

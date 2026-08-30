@@ -67,6 +67,7 @@ type Props = {
   overlayLayer: OverlayLayer;
   overlayWidth: OverlayWidth;
   buttonGradient: string | null;
+  imagePosition: "left" | "right";
 };
 
 export function CarouselSlidePreview({
@@ -92,6 +93,7 @@ export function CarouselSlidePreview({
   overlayLayer,
   overlayWidth,
   buttonGradient,
+  imagePosition,
 }: Props) {
   const fontStyle = fontFamily !== "auto" ? { fontFamily: FONT_VARS[fontFamily] } : undefined;
   const titleStyle = getTextStyle(titleColor, titleGradient, fontStyle);
@@ -106,13 +108,21 @@ export function CarouselSlidePreview({
   const overlayScale =
     overlayWidth === "large" ? 80 : overlayWidth === "medium" ? 55 : 35;
 
+  // Mismo criterio que en PromoCarousel: orden base fijo (imagen arriba,
+  // panel abajo en móvil), solo el orden en sm: cambia según imagePosition.
+  const imageOrderClass = imagePosition === "left" ? "sm:order-1" : "sm:order-2";
+  const panelOrderClass = imagePosition === "left" ? "sm:order-2" : "sm:order-1";
+
   return (
     <div>
       <p className="mb-2 text-sm font-medium text-muted-foreground">Vista previa</p>
       <div className="overflow-hidden rounded-2xl border border-border shadow-elevated">
         <div className="flex flex-col sm:flex-row sm:h-[200px]">
-          {/* Imagen — arriba en móvil, derecha en escritorio (igual que en el sitio real) */}
-          <div className="relative order-1 h-32 w-full overflow-hidden sm:order-2 sm:h-full sm:flex-1" style={imageBoxStyle}>
+          {/* Imagen — arriba en móvil, lado según imagePosition en escritorio */}
+          <div
+            className={`relative order-1 h-32 w-full overflow-hidden ${imageOrderClass} sm:h-full sm:flex-1`}
+            style={imageBoxStyle}
+          >
             {imageUrl ? (
               <Image src={imageUrl} alt={altText || "Vista previa"} fill sizes="380px" className="object-cover" />
             ) : (
@@ -122,9 +132,9 @@ export function CarouselSlidePreview({
             )}
           </div>
 
-          {/* Panel de texto — abajo en móvil, izquierda en escritorio */}
+          {/* Panel de texto — abajo en móvil, lado según imagePosition en escritorio */}
           <div
-            className={`order-2 flex w-full flex-col justify-center p-3 sm:order-1 sm:w-[42%] sm:p-4 ${POSITION_CLASSES[textPosition]}`}
+            className={`order-2 flex w-full flex-col justify-center p-3 ${panelOrderClass} sm:w-[42%] sm:p-4 ${POSITION_CLASSES[textPosition]}`}
             style={panelStyle}
           >
             {overlayImageUrl && (

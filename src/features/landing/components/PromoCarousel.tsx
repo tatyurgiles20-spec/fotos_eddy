@@ -135,6 +135,12 @@ export function PromoCarousel({ slides, autoPlayInterval = 5000 }: PromoCarousel
   const overlayZ = getOverlayZIndex(slide.overlayLayer);
   const titleZ = getTitleZIndex(slide.overlayLayer);
 
+  // El orden base (sin sm:) queda fijo: imagen arriba (order-1), panel abajo
+  // (order-2) — así el móvil nunca cambia. Solo el orden en escritorio (sm:)
+  // varía según qué lado eligió el admin para la imagen.
+  const imageOrderClass = slide.imagePosition === "left" ? "sm:order-1" : "sm:order-2";
+  const panelOrderClass = slide.imagePosition === "left" ? "sm:order-2" : "sm:order-1";
+
   return (
     <section
       className="w-full px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12"
@@ -148,9 +154,10 @@ export function PromoCarousel({ slides, autoPlayInterval = 5000 }: PromoCarousel
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          {/* Imagen — arriba en móvil (order-1), a la derecha en escritorio (order-2) */}
+          {/* Imagen — siempre arriba en móvil (order-1); en escritorio, el lado
+              depende de slide.imagePosition */}
           <div
-            className="relative order-1 h-56 w-full overflow-hidden sm:order-2 sm:h-full sm:flex-1"
+            className={`relative order-1 h-56 w-full overflow-hidden ${imageOrderClass} sm:h-full sm:flex-1`}
             style={imageBoxStyle}
           >
             <Image
@@ -163,12 +170,13 @@ export function PromoCarousel({ slides, autoPlayInterval = 5000 }: PromoCarousel
             />
           </div>
 
-          {/* Panel de texto — abajo en móvil (order-2), a la izquierda en escritorio (order-1).
-              Altura mínima fija en móvil para que no "salte" de tamaño entre slides con/sin
-              botón o título largo. Centrado forzado en móvil; la posición real elegida por
-              el admin solo entra en vigor desde sm: en adelante. */}
+          {/* Panel de texto — siempre abajo en móvil (order-2); en escritorio,
+              el lado depende de slide.imagePosition. Altura mínima fija en
+              móvil para que no "salte" de tamaño entre slides con/sin botón o
+              título largo. Centrado forzado en móvil; la posición real elegida
+              por el admin solo entra en vigor desde sm: en adelante. */}
           <div
-            className={`order-2 flex min-h-[260px] w-full flex-col items-center justify-center p-6 text-center sm:order-1 sm:min-h-0 sm:w-[38%] sm:p-8 sm:text-left lg:w-[34%] lg:p-10 ${positionClassDesktopOnly}`}
+            className={`order-2 flex min-h-[260px] w-full flex-col items-center justify-center p-6 text-center ${panelOrderClass} sm:min-h-0 sm:w-[38%] sm:p-8 sm:text-left lg:w-[34%] lg:p-10 ${positionClassDesktopOnly}`}
             style={panelStyle}
           >
             {slide.overlayImageUrl && (

@@ -53,6 +53,7 @@ export type CarouselSlide = {
   backgroundGradient: string | null;
   buttonGradient: string | null;
   textBackgroundGradient: string | null;
+    imagePosition: "left" | "right";
 };
 
 export type CarouselSlideRow = {
@@ -85,6 +86,7 @@ export type CarouselSlideRow = {
   background_gradient: string | null;
   button_gradient: string | null;
   text_background_gradient: string | null;
+    image_position: "left" | "right" | null;
 };
 
 export function mapCarouselSlideRow(row: CarouselSlideRow): CarouselSlide {
@@ -118,5 +120,6 @@ export function mapCarouselSlideRow(row: CarouselSlideRow): CarouselSlide {
     backgroundGradient: row.background_gradient ?? null,
     buttonGradient: row.button_gradient ?? null,
     textBackgroundGradient: row.text_background_gradient ?? null,
+        imagePosition: row.image_position ?? "right",
   };
 }
