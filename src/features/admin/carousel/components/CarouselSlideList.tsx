@@ -20,25 +20,27 @@ export function CarouselSlideList({ slides, onEdit, onDelete, onMove, onToggleAc
       {slides.map((slide, i) => (
         <div
           key={slide.id}
-          className="flex items-center gap-4 rounded-lg border border-border bg-card p-3"
+          className="flex flex-col gap-3 rounded-lg border border-border bg-card p-3 sm:flex-row sm:items-center sm:gap-4"
         >
-          <img
-            src={slide.imageUrl}
-            alt={slide.altText}
-            className="h-16 w-24 shrink-0 rounded-md object-cover"
-          />
+          <div className="flex items-center gap-3 sm:contents">
+            <img
+              src={slide.imageUrl}
+              alt={slide.altText}
+              className="h-16 w-24 shrink-0 rounded-md object-cover"
+            />
 
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold">{slide.title || "(sin título)"}</p>
-            <p className="truncate text-xs text-muted-foreground">{slide.altText}</p>
-            {slide.buttonText && (
-              <p className="mt-1 text-xs text-muted-foreground">
-                Botón: "{slide.buttonText}" → {slide.buttonHref} ({slide.buttonStyle})
-              </p>
-            )}
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold">{slide.title || "(sin título)"}</p>
+              <p className="truncate text-xs text-muted-foreground">{slide.altText}</p>
+              {slide.buttonText && (
+                <p className="mt-1 truncate text-xs text-muted-foreground">
+                  Botón: "{slide.buttonText}" → {slide.buttonHref} ({slide.buttonStyle})
+                </p>
+              )}
+            </div>
           </div>
 
-          <div className="flex shrink-0 items-center gap-1">
+          <div className="flex flex-wrap items-center gap-1 sm:shrink-0 sm:flex-nowrap">
             <button
               onClick={() => onMove(slide.id, "up")}
               disabled={i === 0}
