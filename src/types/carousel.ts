@@ -1,5 +1,17 @@
 export type ButtonStyle = "primary" | "secondary" | "outline" | "ghost" | "gradient";
-export type FontFamily = "auto" | "display" | "body" | "accent";
+export type FontFamily =
+  | "auto"
+  | "display"     // Sora — ya la tenías
+  | "body"        // Inter — ya la tenías
+  | "accent"      // Caveat — ya la tenías
+  | "poppins"
+  | "montserrat"
+  | "playlist"    // cursiva/script — Dancing Script por ahora
+  | "oswald"
+  | "playfair"
+  | "bebas"
+  | "spacegrotesk"
+  | "merriweather";
 export type TextPosition =
   | "bottom-left"
   | "bottom-center"

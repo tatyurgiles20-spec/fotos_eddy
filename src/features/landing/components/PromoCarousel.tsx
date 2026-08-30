@@ -35,6 +35,14 @@ const FONT_VARS: Record<Exclude<FontFamily, "auto">, string> = {
   display: "var(--font-sora)",
   body: "var(--font-inter)",
   accent: "var(--font-caveat)",
+  poppins: "var(--font-poppins)",
+  montserrat: "var(--font-montserrat)",
+  playlist: "var(--font-playlist)",
+  oswald: "var(--font-oswald)",
+  playfair: "var(--font-playfair)",
+  bebas: "var(--font-bebas)",
+  spacegrotesk: "var(--font-space-grotesk)",
+  merriweather: "var(--font-merriweather)",
 };
 
 const POSITION_CLASSES: Record<TextPosition, string> = {
@@ -96,9 +104,21 @@ export function PromoCarousel({ slides, autoPlayInterval = 5000 }: PromoCarousel
   const buttonGradientStyle =
     slide.buttonStyle === "gradient" ? getButtonGradientStyle(slide.buttonGradient) : undefined;
   const fontStyle = slide.fontFamily !== "auto" ? { fontFamily: FONT_VARS[slide.fontFamily] } : undefined;
+
   const positionClass = POSITION_CLASSES[slide.textPosition] ?? POSITION_CLASSES["bottom-left"];
-  const underlineAlign =
-    slide.textPosition.endsWith("center") ? "mx-auto" : slide.textPosition.endsWith("right") ? "ml-auto" : "mr-auto";
+  // La posición configurada en el admin solo aplica desde sm: en adelante;
+  // en móvil siempre queda centrado (ver className del panel más abajo).
+  const positionClassDesktopOnly = positionClass
+    .split(" ")
+    .map((cls) => `sm:${cls}`)
+    .join(" ");
+
+  const underlineAlignDesktop =
+    slide.textPosition.endsWith("center")
+      ? "sm:mx-auto"
+      : slide.textPosition.endsWith("right")
+      ? "sm:ml-auto sm:mr-0"
+      : "sm:mr-auto sm:ml-0";
 
   const titleStyle = getTextStyle(slide.titleColor, slide.titleGradient, fontStyle);
   const subtitleStyle = getTextStyle(slide.subtitleColor, slide.subtitleGradient, fontStyle);
@@ -143,9 +163,12 @@ export function PromoCarousel({ slides, autoPlayInterval = 5000 }: PromoCarousel
             />
           </div>
 
-          {/* Panel de texto — abajo en móvil (order-2), a la izquierda en escritorio (order-1) */}
+          {/* Panel de texto — abajo en móvil (order-2), a la izquierda en escritorio (order-1).
+              Altura mínima fija en móvil para que no "salte" de tamaño entre slides con/sin
+              botón o título largo. Centrado forzado en móvil; la posición real elegida por
+              el admin solo entra en vigor desde sm: en adelante. */}
           <div
-            className={`order-2 flex w-full flex-col p-6 sm:order-1 sm:w-[38%] sm:p-8 lg:w-[34%] lg:p-10 ${positionClass}`}
+            className={`order-2 flex min-h-[260px] w-full flex-col items-center justify-center p-6 text-center sm:order-1 sm:min-h-0 sm:w-[38%] sm:p-8 sm:text-left lg:w-[34%] lg:p-10 ${positionClassDesktopOnly}`}
             style={panelStyle}
           >
             {slide.overlayImageUrl && (
@@ -170,7 +193,10 @@ export function PromoCarousel({ slides, autoPlayInterval = 5000 }: PromoCarousel
                 </h1>
 
                 {slide.showUnderline && (
-                  <div className={`mt-2 h-2.5 w-28 sm:w-32 ${underlineAlign}`} style={{ color: underlineColor }}>
+                  <div
+                    className={`mx-auto mt-2 h-2.5 w-28 sm:w-32 ${underlineAlignDesktop}`}
+                    style={{ color: underlineColor }}
+                  >
                     <svg viewBox="0 0 250 20" fill="none" xmlns="http://www.w3.org/2000/svg" className={`h-full w-full ${underlineColor ? "" : "text-primary"}`}>
                       <path
                         d="M3 14C50 4 150 3 247 11M15 17C80 9 170 8 230 15"

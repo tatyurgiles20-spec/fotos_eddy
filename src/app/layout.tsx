@@ -1,8 +1,20 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
-import { Sora, Inter, Caveat } from "next/font/google";
- 
+import {
+  Sora,
+  Inter,
+  Caveat,
+  Poppins,
+  Montserrat,
+  Dancing_Script,
+  Oswald,
+  Playfair_Display,
+  Bebas_Neue,
+  Space_Grotesk,
+  Merriweather,
+} from "next/font/google";
+
 // Tipografías
 const sora = Sora({
   subsets: ["latin"],
@@ -21,6 +33,66 @@ const caveat = Caveat({
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  variable: "--font-poppins",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+// Alternativa gratuita a "Playlist Script" (fuente comercial no disponible en
+// next/font/google). Misma variable --font-playlist, así que si más adelante
+// compras la licencia original solo hay que cambiar esta declaración por
+// next/font/local con el archivo real — nada más en el proyecto se toca.
+const dancingScript = Dancing_Script({
+  subsets: ["latin"],
+  variable: "--font-playlist",
+  weight: ["400", "600", "700"],
+  display: "swap",
+});
+
+const oswald = Oswald({
+  subsets: ["latin"],
+  variable: "--font-oswald",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const playfairDisplay = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  weight: ["400", "600", "700"],
+  display: "swap",
+});
+
+const bebasNeue = Bebas_Neue({
+  subsets: ["latin"],
+  variable: "--font-bebas",
+  weight: ["400"],
+  display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const merriweather = Merriweather({
+  subsets: ["latin"],
+  variable: "--font-merriweather",
+  weight: ["400", "700"],
   display: "swap",
 });
 
@@ -117,7 +189,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="es"
-      className={`${sora.variable} ${inter.variable} ${caveat.variable}`}
+      className={`${sora.variable} ${inter.variable} ${caveat.variable} ${poppins.variable} ${montserrat.variable} ${dancingScript.variable} ${oswald.variable} ${playfairDisplay.variable} ${bebasNeue.variable} ${spaceGrotesk.variable} ${merriweather.variable}`}
       suppressHydrationWarning
     >
       <head>

@@ -25,6 +25,14 @@ const FONT_VARS: Record<Exclude<FontFamily, "auto">, string> = {
   display: "var(--font-sora)",
   body: "var(--font-inter)",
   accent: "var(--font-caveat)",
+  poppins: "var(--font-poppins)",
+  montserrat: "var(--font-montserrat)",
+  playlist: "var(--font-playlist)",
+  oswald: "var(--font-oswald)",
+  playfair: "var(--font-playfair)",
+  bebas: "var(--font-bebas)",
+  spacegrotesk: "var(--font-space-grotesk)",
+  merriweather: "var(--font-merriweather)",
 };
 
 const POSITION_CLASSES: Record<TextPosition, string> = {

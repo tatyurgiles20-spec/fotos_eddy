@@ -54,11 +54,20 @@ const BUTTON_STYLE_OPTIONS: { value: ButtonStyle; label: string }[] = [
   { value: "gradient", label: "Degradado" },
 ];
 
+ 
 const FONT_OPTIONS: { value: FontFamily; label: string }[] = [
   { value: "auto", label: "Automática (según el tema)" },
-  { value: "display", label: "Sora (títulos, moderna)" },
-  { value: "body", label: "Inter (texto normal)" },
-  { value: "accent", label: "Caveat (manuscrita)" },
+  { value: "display", label: "Sora — moderna, para títulos" },
+  { value: "body", label: "Inter — legible, para párrafos largos" },
+  { value: "accent", label: "Caveat — manuscrita informal" },
+  { value: "poppins", label: "Poppins — geométrica, subtítulos" },
+  { value: "montserrat", label: "Montserrat — urbana, botones y navegación" },
+  { value: "playlist", label: "Playlist Script — caligráfica, artística" },
+  { value: "oswald", label: "Oswald — condensada, impacto en titulares" },
+  { value: "playfair", label: "Playfair Display — elegante, editorial/lujo" },
+  { value: "bebas", label: "Bebas Neue — mayúsculas, promociones llamativas" },
+  { value: "spacegrotesk", label: "Space Grotesk — moderna, look tecnológico" },
+  { value: "merriweather", label: "Merriweather — serif clásica, formal" },
 ];
 
 const POSITION_OPTIONS: { value: TextPosition; label: string }[] = [
@@ -229,12 +238,13 @@ export function CarouselSlideForm({ editingSlide, onCreate, onUpdate, onCancelEd
           <span className="text-xs font-medium text-muted-foreground">Imagen del Slide</span>
           <InfoTooltip text="Selecciona la imagen de fondo que se mostrará en esta diapositiva del carrusel principal." />
         </div>
-        <ImagePicker
-          selectedImageId={form.imageId || null}
-          onSelect={(imageId, directUrl) =>
-            setForm((f) => ({ ...f, imageId, imageUrl: directUrl }))
-          }
-        />
+<ImagePicker
+  selectedImageId={form.imageId || null}
+  onSelect={(imageId, directUrl) =>
+    setForm((f) => ({ ...f, imageId, imageUrl: directUrl }))
+  }
+  recommendationText="Recomendado: proporción ancha, cercana a 16:9 (ej. 1600×900px). En móvil se recorta a un bloque horizontal, así que evita fotos muy verticales."
+/>
       </div>
 
       {/* Texto Alternativo (Alt) */}
@@ -553,12 +563,13 @@ export function CarouselSlideForm({ editingSlide, onCreate, onUpdate, onCancelEd
           <InfoTooltip text="Sube un logo o una imagen de texto personalizada que aparecerá junto al título. Puedes ajustar qué tan cerca va y si queda encima o detrás del título." />
         </div>
 
-        <ImagePicker
-          selectedImageId={form.overlayImageId}
-          onSelect={(imageId, directUrl) =>
-            setForm((f) => ({ ...f, overlayImageId: imageId, overlayImageUrl: directUrl }))
-          }
-        />
+<ImagePicker
+  selectedImageId={form.overlayImageId}
+  onSelect={(imageId, directUrl) =>
+    setForm((f) => ({ ...f, overlayImageId: imageId, overlayImageUrl: directUrl }))
+  }
+  recommendationText="Recomendado: PNG con fondo transparente, forma ancha y corta (ej. proporción 2:1 o 3:1). El alto se ajusta automático según el ancho elegido."
+/>
 
         {form.overlayImageId && (
           <div className="mt-3 flex flex-wrap items-center gap-3">
