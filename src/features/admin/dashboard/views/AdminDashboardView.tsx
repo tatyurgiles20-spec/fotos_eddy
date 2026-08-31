@@ -90,26 +90,31 @@ export function AdminDashboardView() {
             </div>
           )}
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <StatCard
-              label="Ventas este mes (unidades)"
-              value={data.sales.unitsThisMonth.toString()}
-              trend={trendFrom(data.sales.unitsThisMonth, data.sales.unitsLastMonth)}
-              href="/admin/ventas"
-            />
-            <StatCard
-              label="Ventas este mes ($)"
-              value={formatMoney(data.sales.revenueThisMonth)}
-              trend={trendFrom(data.sales.revenueThisMonth, data.sales.revenueLastMonth)}
-              href="/admin/ventas"
-            />
-            <StatCard label="Valor de inventario" value={formatMoney(data.inventoryValue.total)} />
-            <StatCard
-              label="Publicados / Ocultos"
-              value={`${data.catalog.published} / ${data.catalog.hidden}`}
-              href="/admin/productos"
-            />
-          </div>
+<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+  <StatCard
+    label="Ventas este mes (unidades)"
+    value={data.sales.unitsThisMonth.toString()}
+    trend={trendFrom(data.sales.unitsThisMonth, data.sales.unitsLastMonth)}
+    href="/admin/ventas"
+  />
+  <StatCard
+    label="Ventas este mes ($)"
+    value={formatMoney(data.sales.revenueThisMonth)}
+    trend={trendFrom(data.sales.revenueThisMonth, data.sales.revenueLastMonth)}
+    href="/admin/ventas"
+  />
+  <StatCard
+    label="Descuentos otorgados"
+    value={formatMoney(data.discounts.thisMonth)}
+    href="/admin/ventas"
+  />
+  <StatCard label="Valor de inventario" value={formatMoney(data.inventoryValue.total)} />
+  <StatCard
+    label="Publicados / Ocultos"
+    value={`${data.catalog.published} / ${data.catalog.hidden}`}
+    href="/admin/productos"
+  />
+</div>
 
           <div className="rounded-xl border border-border bg-card p-5">
             <div className="mb-3 flex items-center justify-between">
@@ -133,21 +138,44 @@ export function AdminDashboardView() {
             <BarChart data={data.charts[chartTab]} />
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-2">
-            <div className="rounded-xl border border-border bg-card p-5">
-              <p className="mb-4 font-display text-lg font-bold">Productos más vendidos</p>
-              <TopProductsList items={data.topProducts} />
-            </div>
-            <div className="rounded-xl border border-border bg-card p-5">
-              <div className="mb-4 flex items-center justify-between">
-                <p className="font-display text-lg font-bold">Últimas ventas</p>
-                <Link href="/admin/ventas" className="text-xs font-medium text-primary hover:underline">
-                  Ver todas →
-                </Link>
+<div className="grid gap-4 lg:grid-cols-3">
+  <div className="rounded-xl border border-border bg-card p-5">
+    <p className="mb-4 font-display text-lg font-bold">Productos más vendidos</p>
+    <TopProductsList items={data.topProducts} />
+  </div>
+
+  <div className="rounded-xl border border-border bg-card p-5">
+    <p className="mb-4 font-display text-lg font-bold">Ingresos por método de pago</p>
+    {data.paymentMethods.length === 0 ? (
+      <p className="text-sm text-muted-foreground">Todavía no hay ventas este mes.</p>
+    ) : (
+      <div className="flex flex-col gap-3">
+        {data.paymentMethods.map((pm) => {
+          const max = Math.max(...data.paymentMethods.map((x) => x.total));
+          return (
+            <div key={pm.method} className="flex items-center gap-3">
+              <span className="w-24 shrink-0 truncate text-sm text-muted-foreground">{pm.label}</span>
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
+                <div className="h-full rounded-full bg-primary" style={{ width: `${(pm.total / max) * 100}%` }} />
               </div>
-              <RecentSalesFeed sales={data.recentSales} />
+              <span className="w-16 shrink-0 text-right text-sm font-semibold">{formatMoney(pm.total)}</span>
             </div>
-          </div>
+          );
+        })}
+      </div>
+    )}
+  </div>
+
+  <div className="rounded-xl border border-border bg-card p-5">
+    <div className="mb-4 flex items-center justify-between">
+      <p className="font-display text-lg font-bold">Últimas ventas</p>
+      <Link href="/admin/ventas" className="text-xs font-medium text-primary hover:underline">
+        Ver todas →
+      </Link>
+    </div>
+    <RecentSalesFeed sales={data.recentSales} />
+  </div>
+</div>
 
           {data.inventoryValue.missingCostCount > 0 && (
             <p className="text-xs text-muted-foreground">

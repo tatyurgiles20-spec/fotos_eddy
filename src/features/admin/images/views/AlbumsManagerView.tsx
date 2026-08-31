@@ -9,7 +9,7 @@ import { Pagination } from "@/components/ui/Pagination";
 
 export function AlbumsManagerView() {
   const router = useRouter();
-  const { albums, createAlbum } = useAlbums();
+  const { albums, createAlbum, updateAlbum, deleteAlbum } = useAlbums();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -99,7 +99,12 @@ export function AlbumsManagerView() {
         </Modal>
       )}
 
-      <AlbumList albums={paginated} onOpen={(album) => router.push(`/admin/imagenes/${album.id}`)} />
+      <AlbumList
+        albums={paginated}
+        onOpen={(album) => router.push(`/admin/imagenes/${album.id}`)}
+        onRename={updateAlbum}
+        onDelete={deleteAlbum}
+      />
 
       <Pagination
         page={page}

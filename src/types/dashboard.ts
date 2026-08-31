@@ -17,6 +17,14 @@ export type DashboardData = {
     revenueThisMonth: number;
     revenueLastMonth: number;
   };
+  discounts: {
+    thisMonth: number;
+  };
+  paymentMethods: {
+    method: string;
+    label: string;
+    total: number;
+  }[];
   topProducts: { productId: string; name: string; total: number }[];
   inventoryValue: {
     total: number;

@@ -28,5 +28,21 @@ export function useAlbums() {
     await refresh();
   };
 
-  return { albums, loading, createAlbum, refresh };
+  const updateAlbum = async (id: string, name: string) => {
+    const res = await fetch(`/api/albums/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name }),
+    });
+    if (!res.ok) throw new Error((await res.json()).error);
+    await refresh();
+  };
+
+  const deleteAlbum = async (id: string) => {
+    const res = await fetch(`/api/albums/${id}`, { method: "DELETE" });
+    if (!res.ok) throw new Error((await res.json()).error);
+    await refresh();
+  };
+
+  return { albums, loading, createAlbum, updateAlbum, deleteAlbum, refresh };
 }

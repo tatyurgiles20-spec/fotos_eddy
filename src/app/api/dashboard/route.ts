@@ -4,6 +4,13 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 const MONTH_NAMES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
+const PAYMENT_LABEL: Record<string, string> = {
+  cash: "Efectivo",
+  transfer: "Transferencia",
+  card: "Tarjeta",
+  credit: "Crédito",
+};
+
 export async function GET() {
   const { authorized } = await requireAdmin();
   if (!authorized) return NextResponse.json({ error: "No autorizado" }, { status: 403 });
@@ -12,7 +19,7 @@ export async function GET() {
   const now = new Date();
   const startOfPrevYear = new Date(now.getFullYear() - 1, 0, 1).toISOString();
 
-  const [productsRes, highlightsRes, slidesRes, saleItemsRes, recentSalesRes, pendingPaymentsRes] =
+  const [productsRes, highlightsRes, slidesRes, saleItemsRes, salesTotalsRes, recentSalesRes, pendingPaymentsRes] =
     await Promise.all([
       supabase
         .from("products")
@@ -24,14 +31,22 @@ export async function GET() {
         .select("id", { count: "exact", head: true })
         .eq("active", true)
         .eq("carousel_key", "promo"),
-      // Fuente de verdad de ventas: sale_items + sales (status completed).
-      // Ya NO usamos inventory_movements tipo 'out' para esto, porque también
-      // incluye salidas manuales (ajustes, pérdidas) que no son ventas reales.
+      // Unidades vendidas y ranking de productos: esto sí puede salir de sale_items,
+      // porque las UNIDADES no cambian con el descuento, solo el dinero.
       supabase
         .from("sale_items")
         .select("quantity, subtotal, product_id, product_name_snapshot, sales!inner(created_at, status)")
         .eq("sales.status", "completed")
         .gte("sales.created_at", startOfPrevYear),
+      // Ingresos y descuentos reales: deben salir de sales.total/discount_total,
+      // que ya incluyen TANTO el descuento por línea COMO el descuento de la venta
+      // completa. Sumar sale_items.subtotal se queda corto porque ese campo solo
+      // refleja el descuento de línea, no el de la venta.
+      supabase
+        .from("sales")
+        .select("id, total, discount_total, payment_method, created_at, status")
+        .eq("status", "completed")
+        .gte("created_at", startOfPrevYear),
       supabase
         .from("sales")
         .select("id, sale_number, total, payment_method, status, created_at, customers(name)")
@@ -46,6 +61,7 @@ export async function GET() {
 
   if (productsRes.error) return NextResponse.json({ error: productsRes.error.message }, { status: 500 });
   if (saleItemsRes.error) return NextResponse.json({ error: saleItemsRes.error.message }, { status: 500 });
+  if (salesTotalsRes.error) return NextResponse.json({ error: salesTotalsRes.error.message }, { status: 500 });
   if (recentSalesRes.error) return NextResponse.json({ error: recentSalesRes.error.message }, { status: 500 });
 
   // ---------- Productos: stock, valor de inventario, publicados/ocultos ----------
@@ -61,7 +77,7 @@ export async function GET() {
   const published = products.filter((p) => p.is_published).length;
   const hidden = products.filter((p) => !p.is_published).length;
 
-  // ---------- Ventas: unidades, ingresos, ranking y gráficas ----------
+  // ---------- Unidades vendidas, ranking y gráficas (desde sale_items) ----------
   type SalesJoin = { created_at: string; status: string };
   const getSaleInfo = (row: { sales: SalesJoin | SalesJoin[] | null }): SalesJoin | null => {
     const s = row.sales as unknown;
@@ -75,9 +91,7 @@ export async function GET() {
   const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
 
   let unitsThisMonth = 0;
-  let revenueThisMonth = 0;
   let unitsLastMonth = 0;
-  let revenueLastMonth = 0;
 
   const salesByProduct = new Map<string, { name: string; total: number }>();
 
@@ -97,10 +111,8 @@ export async function GET() {
 
     if (created >= monthStart) {
       unitsThisMonth += item.quantity;
-      revenueThisMonth += item.subtotal;
     } else if (created >= prevMonthStart && created < monthStart) {
       unitsLastMonth += item.quantity;
-      revenueLastMonth += item.subtotal;
     }
 
     if (item.product_id) {
@@ -130,6 +142,30 @@ export async function GET() {
   }));
   const weekly = weekBuckets.map((value, i) => ({ label: `Sem ${i + 1}`, value }));
   const monthly = monthBuckets.map((value, i) => ({ label: MONTH_NAMES[i], value }));
+
+  // ---------- Ingresos y descuentos reales (desde sales.total/discount_total) ----------
+  const salesTotals = salesTotalsRes.data ?? [];
+
+  let revenueThisMonth = 0;
+  let revenueLastMonth = 0;
+  let discountThisMonth = 0;
+  const paymentBreakdown = new Map<string, number>();
+
+  for (const sale of salesTotals) {
+    const created = new Date(sale.created_at);
+
+    if (created >= monthStart) {
+      revenueThisMonth += sale.total;
+      discountThisMonth += sale.discount_total;
+      paymentBreakdown.set(sale.payment_method, (paymentBreakdown.get(sale.payment_method) ?? 0) + sale.total);
+    } else if (created >= prevMonthStart && created < monthStart) {
+      revenueLastMonth += sale.total;
+    }
+  }
+
+  const paymentMethods = [...paymentBreakdown.entries()]
+    .map(([method, total]) => ({ method, label: PAYMENT_LABEL[method] ?? method, total }))
+    .sort((a, b) => b.total - a.total);
 
   // ---------- Últimas ventas ----------
   type CustomerJoin = { name: string };
@@ -164,6 +200,8 @@ export async function GET() {
       pendingPayments: pendingPaymentsRes.count ?? 0,
     },
     sales: { unitsThisMonth, unitsLastMonth, revenueThisMonth, revenueLastMonth },
+    discounts: { thisMonth: discountThisMonth },
+    paymentMethods,
     topProducts,
     inventoryValue: { total: inventoryValue, missingCostCount },
     catalog: { published, hidden },
