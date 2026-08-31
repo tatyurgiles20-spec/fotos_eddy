@@ -96,47 +96,42 @@ const merriweather = Merriweather({
   display: "swap",
 });
 
-// Metadatos SEO optimizados para Ecuador
-// Metadatos SEO optimizados y agresivos para Ecuador
+// Metadatos SEO agresivos y optimizados
 export const metadata: Metadata = {
-  metadataBase: new URL("https://novaprint.ec"),
+  metadataBase: new URL("https://novaprintecu.com"),
   title: {
-    default:
-      "Nova Print | Fotógrafo de Eventos y Artículos Personalizados en Azogues, Cañar y Ecuador",
+    default: "Nova Print | Fotógrafo de Eventos y Personalizados en Azogues, Cañar y Ecuador",
     template: "%s | Nova Print",
   },
   description:
-    "Fotógrafo profesional de eventos en Azogues y Cañar. Especialistas en fotografía de bodas, quinceaños, bautizos y eventos. Además: sublimación, regalos personalizados, tazas, polos y merchandising con envíos a todo Ecuador. ¡Cotiza hoy!",
+    "Fotógrafo profesional de eventos, bodas y quinceaños en Azogues y Cañar. También sublimación, regalos personalizados y merchandising con envíos a todo Ecuador. ¡Agenda tu sesión hoy!",
   keywords: [
-    // Principales
-    "fotógrafo de eventos azogues",
-    "fotógrafo profesional cañar",
-    "fotografía de bodas azogues",
+    "fotógrafo azogues",
+    "fotógrafo cañar",
+    "fotografía de eventos ecuador",
+    "fotógrafo de bodas azogues",
     "fotógrafo de quinceaños cañar",
-    "artículos personalizados ecuador",
+    "artículos personalizados azogues",
     "sublimación azogues",
-    "regalos personalizados cañar",
-    "impresiones personalizadas ecuador",
-    // Secundarias / long-tail
-    "fotógrafo de eventos ecuador",
-    "fotografía de eventos azogues",
-    "estudio fotográfico azogues",
-    "tazas personalizadas azogues",
-    "polos personalizados ecuador",
-    "merchandising personalizado cañar",
-    "fotógrafo de bautizos azogues",
-    "fotos de eventos cañar",
+    "regalos personalizados ecuador",
+    "impresión personalizada cañar",
     "nova print azogues",
-    "personalizados en azogues",
-    "sublimación en cañar",
+    "fotografía profesional ecuador",
+    "merchandising personalizado ecuador",
+    "fotógrafo eventos azogues",
+    "tazas personalizadas azogues",
+    "camisetas personalizadas cañar",
   ],
-  authors: [{ name: "Nova Print" }],
+  authors: [{ name: "Nova Print", url: "https://novaprintecu.com" }],
   creator: "Nova Print",
   publisher: "Nova Print",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
+  },
+  alternates: {
+    canonical: "https://novaprintecu.com",
   },
   manifest: "/site.webmanifest",
   icons: {
@@ -150,33 +145,28 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title:
-      "Nova Print | Fotógrafo de Eventos y Artículos Personalizados en Azogues",
+    title: "Nova Print | Fotógrafo de Eventos y Personalizados en Azogues y Ecuador",
     description:
       "Fotografía profesional de bodas, quinceaños y eventos + sublimación y regalos personalizados. Cobertura en Azogues, Cañar y envíos a todo Ecuador.",
-    url: "https://novaprint.ec",
+    url: "https://novaprintecu.com",
     siteName: "Nova Print",
     locale: "es_EC",
     type: "website",
     images: [
       {
-        url: "/og-image.jpg", // ← Reemplaza por tu imagen real (ideal 1200x630)
+        url: "/og-image.jpg", // ← Asegúrate de tener una imagen 1200x630
         width: 1200,
         height: 630,
-        alt: "Nova Print - Fotografía de Eventos y Personalizados en Azogues",
+        alt: "Nova Print - Fotografía de eventos y artículos personalizados en Ecuador",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title:
-      "Nova Print | Fotógrafo de Eventos y Artículos Personalizados en Azogues",
+    title: "Nova Print | Fotógrafo de Eventos y Personalizados en Ecuador",
     description:
-      "Fotografía profesional de eventos + sublimación y regalos personalizados. Azogues, Cañar y todo Ecuador.",
+      "Fotografía profesional + sublimación y regalos personalizados en Azogues, Cañar y todo Ecuador.",
     images: ["/og-image.jpg"],
-  },
-  alternates: {
-    canonical: "https://novaprint.ec",
   },
   robots: {
     index: true,
@@ -197,25 +187,21 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  // Schema JSON-LD agresivo y completo
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // Schema JSON-LD muy completo y agresivo
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    "@id": "https://novaprint.ec",
+    "@id": "https://novaprintecu.com",
     name: "Nova Print",
-    alternateName: "Nova Print Azogues",
+    alternateName: "Nova Print Ecuador",
     description:
-      "Estudio fotográfico y de artículos personalizados en Azogues, Cañar. Especialistas en fotografía de eventos (bodas, quinceaños, bautizos) y sublimación de regalos, tazas, polos y merchandising. Envíos a todo Ecuador.",
-    url: "https://novaprint.ec",
+      "Estudio de fotografía profesional de eventos y artículos personalizados (sublimación, regalos y merchandising) en Azogues, Cañar y con envíos a todo Ecuador.",
+    url: "https://novaprintecu.com",
     telephone: "+593978727748",
     email: "novaprintoficial1@gmail.com",
-    image: "https://novaprint.ec/logo.jpg",
-    logo: "https://novaprint.ec/logo.jpg",
+    image: "https://novaprintecu.com/logo.jpg",
+    logo: "https://novaprintecu.com/logo.jpg",
     priceRange: "$$",
     currenciesAccepted: "USD",
     paymentAccepted: "Cash, Transfer, Card",
@@ -242,45 +228,16 @@ export default function RootLayout({
         name: "Cañar",
       },
       {
-        "@type": "AdministrativeArea",
-        name: "Azuay",
-      },
-      {
         "@type": "Country",
         name: "Ecuador",
       },
     ],
-    hasOfferCatalog: {
-      "@type": "OfferCatalog",
-      name: "Servicios Nova Print",
-      itemListElement: [
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Fotografía de Eventos",
-            description:
-              "Cobertura profesional de bodas, quinceaños, bautizos, graduaciones y eventos sociales en Azogues y Cañar.",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Artículos Personalizados y Sublimación",
-            description:
-              "Tazas, polos, gorras, llaveros, cuadros y merchandising personalizado con envíos a todo Ecuador.",
-          },
-        },
-      ],
-    },
     knowsAbout: [
       "Fotografía de eventos",
       "Fotografía de bodas",
       "Fotografía de quinceaños",
-      "Fotografía de bautizos",
-      "Artículos personalizados",
       "Sublimación",
+      "Artículos personalizados",
       "Regalos personalizados",
       "Merchandising",
       "Impresión personalizada",
@@ -291,13 +248,22 @@ export default function RootLayout({
       "https://www.tiktok.com/@novaprintec",
       "https://wa.me/593978727748",
     ],
-    contactPoint: {
-      "@type": "ContactPoint",
-      telephone: "+593978727748",
-      contactType: "customer service",
-      availableLanguage: ["Spanish"],
-      areaServed: "EC",
-    },
+    contactPoint: [
+      {
+        "@type": "ContactPoint",
+        telephone: "+593978727748",
+        contactType: "customer service",
+        areaServed: "EC",
+        availableLanguage: ["Spanish"],
+      },
+      {
+        "@type": "ContactPoint",
+        email: "novaprintoficial1@gmail.com",
+        contactType: "customer service",
+        areaServed: "EC",
+        availableLanguage: ["Spanish"],
+      },
+    ],
   };
 
   return (
