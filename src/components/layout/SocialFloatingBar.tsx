@@ -1,8 +1,24 @@
 const SOCIAL_LINKS = [
-  { id: "whatsapp", label: "WhatsApp", href: "https://wa.me/00000000000" },
-  { id: "instagram", label: "Instagram", href: "https://instagram.com/" },
-  { id: "facebook", label: "Facebook", href: "https://facebook.com/" },
-  { id: "tiktok", label: "TikTok", href: "https://tiktok.com/@" },
+  {
+    id: "whatsapp",
+    label: "WhatsApp",
+    href: "https://wa.me/593978727748",
+  },
+  {
+    id: "instagram",
+    label: "Instagram",
+    href: "https://www.instagram.com/nova.printec",
+  },
+  {
+    id: "facebook",
+    label: "Facebook",
+    href: "https://www.facebook.com/share/1S7LLaQq4E",
+  },
+  {
+    id: "tiktok",
+    label: "TikTok",
+    href: "https://www.tiktok.com/@novaprintec",
+  },
 ] as const;
 
 function SocialIcon({ id }: { id: string }) {
@@ -38,6 +54,17 @@ function SocialIcon({ id }: { id: string }) {
   }
 }
 
+const socialStyles: Record<string, string> = {
+  whatsapp:
+    "bg-[#25D366] text-white shadow-[0_4px_14px_rgba(37,211,102,0.45)] hover:bg-[#1ebe57] hover:shadow-[0_6px_20px_rgba(37,211,102,0.55)]",
+  instagram:
+    "bg-gradient-to-br from-[#f58529] via-[#dd2a7b] to-[#8134af] text-white shadow-[0_4px_14px_rgba(221,42,123,0.4)] hover:brightness-110 hover:shadow-[0_6px_20px_rgba(221,42,123,0.5)]",
+  facebook:
+    "bg-[#1877F2] text-white shadow-[0_4px_14px_rgba(24,119,242,0.4)] hover:bg-[#166fe5] hover:shadow-[0_6px_20px_rgba(24,119,242,0.5)]",
+  tiktok:
+    "bg-[#010101] text-white shadow-[0_4px_14px_rgba(0,0,0,0.35)] hover:bg-[#1a1a1a] hover:shadow-[0_6px_20px_rgba(0,0,0,0.45)]",
+};
+
 export function SocialFloatingBar() {
   return (
     <div className="fixed bottom-6 right-6 z-40 flex flex-col gap-3">
@@ -48,9 +75,16 @@ export function SocialFloatingBar() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={social.label}
-         className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground! shadow-lg transition-transform hover:scale-110"
+          className={`
+            group flex h-12 w-12 items-center justify-center rounded-full
+            transition-all duration-300 ease-out
+            hover:scale-110 active:scale-95
+            ${socialStyles[social.id]}
+          `}
         >
-        <SocialIcon id={social.id} />
+          <span className="transition-transform duration-300 group-hover:scale-110">
+            <SocialIcon id={social.id} />
+          </span>
         </a>
       ))}
     </div>
