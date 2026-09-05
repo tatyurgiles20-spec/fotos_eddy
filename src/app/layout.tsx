@@ -14,6 +14,7 @@ import {
   Space_Grotesk,
   Merriweather,
 } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 // Tipografías
 const sora = Sora({
@@ -294,6 +295,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="bg-background text-foreground antialiased">
         <Providers>{children}</Providers>
+        {/* 2. Añadir Google Analytics aquí */}
+        <GoogleAnalytics gaId="G-ZV1YBZP5XR" />
       </body>
     </html>
   );
