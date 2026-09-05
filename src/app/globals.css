@@ -206,3 +206,45 @@ a:not([class*="text-"]) {
 .tooltip-solid-arrow {
   border-top-color: var(--card) !important;
 }
+
+/* ── Tipografía por rol de sección ── */
+
+/* Títulos de sección (Playlist Script / Dancing Script) */
+.section-title {
+  font-family: var(--font-playlist), cursive;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+/* Subtítulos de sección (Poppins) */
+.section-subtitle {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: 500;
+}
+
+/* Texto de párrafo (Inter) — se hereda desde el body */
+body {
+  font-family: var(--font-inter), sans-serif;
+}
+
+/* Botones (Montserrat) */
+button,
+.btn,
+a.button {
+  font-family: var(--font-montserrat), sans-serif;
+  font-weight: 600;
+}
+
+/* ── Espaciado reducido entre secciones ── */
+/* Úsala en el wrapper <section> de cada bloque para reemplazar
+   paddings sueltos como py-12/py-16/py-20 y unificar el espaciado */
+.section-spacing {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+@media (min-width: 640px) {
+  .section-spacing {
+    padding-top: 2.75rem;
+    padding-bottom: 2.75rem;
+  }
+}

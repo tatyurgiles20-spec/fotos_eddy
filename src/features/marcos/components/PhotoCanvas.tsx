@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { RotateCcw } from "lucide-react";
 import type { Frame } from "@/types/frame";
 
 type Props = {
@@ -60,7 +61,7 @@ export function PhotoCanvas({ frame, photoUrl }: Props) {
         onPointerLeave={handlePointerUp}
         onWheel={handleWheel}
         style={{ aspectRatio }}
-        className="relative mx-auto w-full max-w-md overflow-hidden rounded-lg border border-border bg-muted"
+        className="relative mx-auto w-full max-w-md overflow-hidden rounded-lg border border-border bg-muted shadow-soft"
       >
         {photoUrl ? (
           <img
@@ -90,7 +91,7 @@ export function PhotoCanvas({ frame, photoUrl }: Props) {
 
       {photoUrl && (
         <div className="mx-auto flex max-w-md items-center gap-3">
-          <span className="text-xs text-muted-foreground">Zoom</span>
+          <span className="section-subtitle text-xs !font-medium text-muted-foreground">Zoom</span>
           <input
             type="range"
             min={MIN_SCALE}
@@ -98,13 +99,14 @@ export function PhotoCanvas({ frame, photoUrl }: Props) {
             step={0.05}
             value={scale}
             onChange={(e) => setScale(Number(e.target.value))}
-            className="flex-1"
+            className="flex-1 accent-primary"
           />
           <button
             type="button"
             onClick={reset}
-            className="rounded-lg border border-border px-3 py-1 text-xs font-medium hover:bg-muted"
+            className="btn inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1 text-xs transition-colors hover:bg-muted hover:border-primary/40"
           >
+            <RotateCcw className="h-3.5 w-3.5" />
             Reiniciar
           </button>
         </div>

@@ -21,10 +21,10 @@ export function CategoryFilter({ categories, activeSlug, basePath, description }
         <div className="flex flex-wrap justify-center gap-2">
           <Link
             href={basePath}
-            className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+            className={`btn rounded-full border px-4 py-1.5 text-sm transition-all duration-300 ${
               !activeSlug
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border text-muted-foreground hover:bg-muted"
+                ? "border-primary bg-primary text-primary-foreground shadow-colored"
+                : "border-border text-muted-foreground hover:bg-muted hover:border-primary/40"
             }`}
           >
             Todos
@@ -33,10 +33,10 @@ export function CategoryFilter({ categories, activeSlug, basePath, description }
             <Link
               key={cat.id}
               href={`${basePath}?categoria=${cat.slug}`}
-              className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+              className={`btn rounded-full border px-4 py-1.5 text-sm transition-all duration-300 ${
                 activeSlug === cat.slug
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border text-muted-foreground hover:bg-muted"
+                  ? "border-primary bg-primary text-primary-foreground shadow-colored"
+                  : "border-border text-muted-foreground hover:bg-muted hover:border-primary/40"
               }`}
             >
               {cat.name}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { UploadCloud } from "lucide-react";
 
 type Props = {
   onFileSelected: (file: File | null) => void;
@@ -29,8 +30,8 @@ export function PhotoDropzone({ onFileSelected, hasPhoto }: Props) {
         setIsDragging(false);
         handleFiles(e.dataTransfer.files);
       }}
-      className={`flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed px-4 py-6 text-center text-sm transition-colors ${
-        isDragging ? "border-primary bg-primary/5" : "border-border hover:bg-muted"
+      className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-6 text-center text-sm transition-all duration-300 ${
+        isDragging ? "border-primary bg-primary/5 scale-[1.01]" : "border-border hover:bg-muted hover:border-primary/40"
       }`}
     >
       <input
@@ -40,6 +41,7 @@ export function PhotoDropzone({ onFileSelected, hasPhoto }: Props) {
         onChange={(e) => handleFiles(e.target.files)}
         className="hidden"
       />
+      <UploadCloud className={`h-6 w-6 ${isDragging ? "text-primary" : "text-muted-foreground"}`} />
       <p className="text-muted-foreground">
         {hasPhoto ? "Arrastra otra foto o haz clic para cambiarla" : "Arrastra tu foto aquí o haz clic para elegirla"}
       </p>

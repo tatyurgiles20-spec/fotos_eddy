@@ -13,11 +13,15 @@ export async function ProductDetailView({ slug }: { slug: string }) {
   );
 
   return (
-    <> 
-      <main className="mx-auto max-w-5xl px-6 py-16">
-        <div className="grid gap-10 md:grid-cols-2">
+    <>
+      <main className="section-spacing relative mx-auto max-w-5xl px-6 overflow-hidden">
+        {/* Blobs decorativos de fondo, mismo patrón que el resto de la landing */}
+        <div className="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-20 -left-16 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+
+        <div className="relative grid gap-10 md:grid-cols-2">
           <div className="grid gap-3">
-            <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-border bg-muted">
+            <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-border bg-muted shadow-soft">
               {sortedImages[0]?.images && (
                 <Image
                   src={sortedImages[0].images.direct_url}
@@ -34,7 +38,10 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                 {sortedImages.slice(1).map(
                   (img) =>
                     img.images && (
-                      <div key={img.image_id} className="relative aspect-square overflow-hidden rounded-lg border border-border">
+                      <div
+                        key={img.image_id}
+                        className="relative aspect-square overflow-hidden rounded-lg border border-border transition-shadow duration-300 hover:shadow-soft hover:border-primary/50"
+                      >
                         <Image src={img.images.direct_url} alt={img.images.alt_text ?? ""} fill className="object-cover" />
                       </div>
                     )
@@ -44,14 +51,18 @@ export async function ProductDetailView({ slug }: { slug: string }) {
           </div>
 
           <div>
-            <h1 className="font-display text-3xl font-bold">{product.name}</h1>
-            <p className="mt-3 text-2xl font-semibold text-primary">${product.sale_price.toFixed(2)}</p>
+            <span className="section-subtitle text-xs sm:text-sm uppercase tracking-[0.2em] text-primary">
+              Producto
+            </span>
+            <h1 className="section-title mt-1 !text-4xl sm:!text-5xl text-foreground">{product.name}</h1>
+            <div className="mt-3 h-1 w-14 rounded-full bg-primary/70" />
+            <p className="btn mt-4 text-2xl !font-bold text-primary">${product.sale_price.toFixed(2)}</p>
             {product.description && (
               <p className="mt-6 text-sm leading-relaxed text-muted-foreground">{product.description}</p>
             )}
           </div>
         </div>
-      </main> 
+      </main>
     </>
   );
 }

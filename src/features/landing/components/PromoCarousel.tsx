@@ -143,13 +143,17 @@ export function PromoCarousel({ slides, autoPlayInterval = 5000 }: PromoCarousel
 
   return (
     <section
-      className="w-full px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12"
+      className="relative w-full overflow-hidden px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
+      {/* Blobs decorativos de fondo, solo chrome — no tocan contenido del admin */}
+      <div className="pointer-events-none absolute -top-16 -left-16 h-56 w-56 rounded-full bg-primary/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-16 -right-16 h-56 w-56 rounded-full bg-primary/10 blur-3xl" />
+
       <div className="group relative mx-auto max-w-7xl">
         <div
-          className="flex flex-col overflow-hidden rounded-2xl border border-border shadow-elevated sm:flex-row sm:h-[420px] lg:h-[460px]"
+          className="flex flex-col overflow-hidden rounded-2xl border border-border shadow-elevated ring-1 ring-border/40 sm:flex-row sm:h-[420px] lg:h-[460px]"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -252,7 +256,7 @@ export function PromoCarousel({ slides, autoPlayInterval = 5000 }: PromoCarousel
               type="button"
               onClick={() => goTo(index - 1)}
               aria-label="Anterior"
-              className="absolute -left-3 top-1/2 z-30 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card text-foreground opacity-0 shadow-md transition-all duration-300 hover:scale-110 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto sm:flex sm:-left-4"
+              className="absolute -left-3 top-1/2 z-30 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-border/80 bg-card/90 backdrop-blur text-foreground opacity-0 shadow-soft transition-all duration-300 hover:scale-110 hover:bg-card pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto sm:flex sm:-left-4"
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
@@ -263,14 +267,14 @@ export function PromoCarousel({ slides, autoPlayInterval = 5000 }: PromoCarousel
               type="button"
               onClick={() => goTo(index + 1)}
               aria-label="Siguiente"
-              className="absolute -right-3 top-1/2 z-30 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card text-foreground opacity-0 shadow-md transition-all duration-300 hover:scale-110 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto sm:flex sm:-right-4"
+              className="absolute -right-3 top-1/2 z-30 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-border/80 bg-card/90 backdrop-blur text-foreground opacity-0 shadow-soft transition-all duration-300 hover:scale-110 hover:bg-card pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto sm:flex sm:-right-4"
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
               </svg>
             </button>
 
-            <div className="mt-4 flex items-center justify-center gap-2">
+            <div className="mt-3 flex items-center justify-center gap-2">
               {slides.map((s, i) => (
                 <button
                   key={s.id}
@@ -278,7 +282,7 @@ export function PromoCarousel({ slides, autoPlayInterval = 5000 }: PromoCarousel
                   onClick={() => goTo(i)}
                   aria-label={`Ir a la diapositiva ${i + 1}`}
                   className={`h-2 rounded-full transition-all duration-500 ${
-                    i === index ? "w-6 bg-primary" : "w-2 bg-border hover:bg-muted-foreground"
+                    i === index ? "w-6 bg-primary shadow-colored" : "w-2 bg-border hover:bg-muted-foreground"
                   }`}
                 />
               ))}

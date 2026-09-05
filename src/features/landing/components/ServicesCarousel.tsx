@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import type { CategoryHighlight } from "@/types/category-highlight";
 
 type ServiceSlide = {
@@ -118,11 +119,20 @@ export function ServicesCarousel({
   const visibleOffsets = [-2, -1, 0, 1, 2];
 
   return (
-    <section className="mx-auto max-w-7xl px-2 sm:px-6 py-12 overflow-x-clip">
-      <div className="mb-10 text-center">
-        <h3 className="tag-handwritten !text-3xl sm:!text-4xl md:!text-5xl font-bold tracking-wide text-foreground">
+    <section className="section-spacing relative mx-auto max-w-7xl px-2 sm:px-6 overflow-x-clip">
+      {/* Blobs decorativos de fondo, igual que ValuePropsSection */}
+      <div className="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-20 -left-16 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+
+      <div className="relative mb-6 sm:mb-8 text-center">
+        <span className="section-subtitle inline-flex items-center gap-2 text-xs sm:text-sm uppercase tracking-[0.2em] text-primary mb-2">
+          <Sparkles className="h-4 w-4" />
+          Categorías
+        </span>
+        <h3 className="section-title !text-3xl sm:!text-4xl md:!text-5xl text-foreground">
           {title}
         </h3>
+        <div className="mx-auto mt-3 h-1 w-16 rounded-full bg-primary/70" />
       </div>
 
       <div
@@ -133,6 +143,24 @@ export function ServicesCarousel({
         style={{ perspective: "1000px" }}
         className="relative flex h-[320px] sm:h-[380px] lg:h-[420px] w-full items-center justify-center"
       >
+        {/* Flechas de navegación (solo decorativas/UX, no tocan el contenido del admin) */}
+        <button
+          type="button"
+          onClick={goPrev}
+          aria-label="Anterior"
+          className="btn absolute left-1 sm:left-4 z-20 hidden sm:flex h-10 w-10 items-center justify-center rounded-full border border-border/80 bg-card/80 backdrop-blur shadow-soft transition-transform hover:scale-105 hover:bg-card"
+        >
+          <ChevronLeft className="h-5 w-5 text-foreground" />
+        </button>
+        <button
+          type="button"
+          onClick={goNext}
+          aria-label="Siguiente"
+          className="btn absolute right-1 sm:right-4 z-20 hidden sm:flex h-10 w-10 items-center justify-center rounded-full border border-border/80 bg-card/80 backdrop-blur shadow-soft transition-transform hover:scale-105 hover:bg-card"
+        >
+          <ChevronRight className="h-5 w-5 text-foreground" />
+        </button>
+
         {visibleOffsets.map((offset) => {
           const serviceIndex = ((currentIndex + offset) % length + length) % length;
           const service = services[serviceIndex];
@@ -178,7 +206,9 @@ export function ServicesCarousel({
                 transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
                 willChange: "transform, opacity",
               }}
-              className="absolute aspect-[3/4] w-36 sm:w-40 lg:w-52 cursor-pointer select-none rounded-2xl border border-border/80 bg-card overflow-hidden"
+              className={`absolute aspect-[3/4] w-36 sm:w-40 lg:w-52 cursor-pointer select-none rounded-2xl border overflow-hidden bg-card ${
+                offset === 0 ? "border-primary/60 ring-2 ring-primary/30" : "border-border/80"
+              }`}
             >
               <Image
                 src={service.imageUrl}
@@ -199,7 +229,7 @@ export function ServicesCarousel({
                 }}
                 className="pointer-events-none absolute inset-x-0 bottom-0 p-3 sm:p-5"
               >
-                <h4 className="font-display text-xs sm:text-base lg:text-lg font-bold text-white">
+                <h4 className="section-subtitle text-xs sm:text-base lg:text-lg !font-semibold text-white">
                   {service.title}
                 </h4>
                 <p className="mt-1 text-[10px] sm:text-sm text-white/80 line-clamp-2">
@@ -211,7 +241,7 @@ export function ServicesCarousel({
         })}
       </div>
 
-      <div className="mt-8 flex justify-center gap-2">
+      <div className="mt-5 flex justify-center gap-2">
         {services.map((service, index) => (
           <button
             key={service.id}
@@ -219,7 +249,7 @@ export function ServicesCarousel({
             aria-label={`Ir a ${service.title}`}
             className={`h-2 rounded-full transition-all duration-500 ease-out ${
               index === currentIndex
-                ? "w-6 bg-foreground"
+                ? "w-6 bg-primary"
                 : "w-2 bg-foreground/30"
             }`}
           />

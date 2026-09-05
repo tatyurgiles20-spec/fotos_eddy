@@ -16,8 +16,10 @@ export function FrameThumbnailStrip({ frames, selectedId, onSelect }: Props) {
           key={frame.id}
           type="button"
           onClick={() => onSelect(frame)}
-          className={`shrink-0 overflow-hidden rounded-lg border-2 transition-colors ${
-            selectedId === frame.id ? "border-primary" : "border-transparent"
+          className={`shrink-0 overflow-hidden rounded-lg border-2 transition-all duration-300 ${
+            selectedId === frame.id
+              ? "border-primary shadow-colored"
+              : "border-transparent hover:border-border-strong"
           }`}
         >
           <img src={frame.directUrl} alt={frame.name} className="h-16 w-16 bg-muted object-contain" />

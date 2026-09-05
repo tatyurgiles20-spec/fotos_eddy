@@ -61,12 +61,12 @@ export function Footer() {
   return (
     <footer className="relative border-t border-border bg-primary overflow-hidden">
       {/* Sutil decoración de fondo */}
-      <div className="pointer-events-none absolute inset-0 opacity-[0.03]">
+      <div className="pointer-events-none absolute inset-0 opacity-[0.05]">
         <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-primary-foreground blur-3xl" />
         <div className="absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-primary-foreground blur-3xl" />
       </div>
 
-      <div className="relative mx-auto max-w-6xl px-6 py-14">
+      <div className="relative mx-auto max-w-6xl px-6 py-12">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-4">
           {/* Marca */}
           <div className="flex items-start gap-5 md:col-span-2">
@@ -86,7 +86,7 @@ export function Footer() {
 
             <div className="flex flex-col items-start pt-1">
               <Link href="/">
-                <span className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-primary-foreground transition-opacity hover:opacity-90">
+                <span className="section-title text-4xl sm:text-5xl text-primary-foreground transition-opacity hover:opacity-90">
                   Nova Print
                 </span>
               </Link>
@@ -105,7 +105,7 @@ export function Footer() {
 
           {/* Explora */}
           <div className="flex flex-col items-start text-left">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-primary-foreground">
+            <h3 className="section-subtitle text-xs !font-semibold uppercase tracking-wider text-primary-foreground">
               Explora
             </h3>
             <div className="mt-5 flex flex-col gap-3.5 text-sm text-primary-foreground/75">
@@ -141,7 +141,7 @@ export function Footer() {
 
           {/* Contacto + Redes */}
           <div className="flex flex-col items-start text-left">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-primary-foreground">
+            <h3 className="section-subtitle text-xs !font-semibold uppercase tracking-wider text-primary-foreground">
               Contacto
             </h3>
 
@@ -202,7 +202,7 @@ export function Footer() {
         </div>
 
         {/* Barra inferior */}
-        <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-primary-foreground/15 pt-7 text-xs text-primary-foreground/55 md:flex-row">
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-primary-foreground/15 pt-6 text-xs text-primary-foreground/55 md:flex-row">
           <p>
             &copy; {new Date().getFullYear()} Nova Print. Todos los derechos
             reservados.
@@ -210,7 +210,7 @@ export function Footer() {
 
           <Link
             href="/login"
-            className="group inline-flex items-center gap-1.5 text-primary-foreground/35 transition-colors hover:text-primary-foreground/70"
+            className="btn group inline-flex items-center gap-1.5 text-primary-foreground/35 transition-colors hover:text-primary-foreground/70"
             title="Acceso administrador"
           >
             <svg
